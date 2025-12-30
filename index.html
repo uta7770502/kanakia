@@ -497,11 +497,19 @@
   // 起動
   // =========================
   initMonthPicker();
-  renderActivities();
-  loadMonth(viewYear, viewMonth);
+renderActivities();
 
-  // 初期選択（任意）：運動
-  selectActivity("sport");
+// URLクエリで月指定があれば優先
+const qp = new URLSearchParams(location.search);
+const qy = qp.get("y");
+const qm = qp.get("m"); // 1-12
+if(qy && qm){
+  loadMonth(Number(qy), Number(qm)-1);
+}else{
+  loadMonth(viewYear, viewMonth);
+}
+
+selectActivity("sport");
 </script>
 </body>
 </html>
