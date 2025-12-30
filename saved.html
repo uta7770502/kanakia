@@ -33,11 +33,7 @@
     }
     h1{ margin:0; font-size: 18px; }
     .sub{ margin-top:6px; color:var(--muted); font-size: 13px; line-height:1.6; }
-    .ok{
-      display:flex; align-items:center; gap:10px;
-      font-weight:800;
-      font-size: 18px;
-    }
+    .ok{ display:flex; align-items:center; gap:10px; font-weight:800; font-size: 18px; }
     .ok .badge{
       width:42px; height:42px; border-radius: 14px;
       background: #dcfce7;
@@ -45,10 +41,7 @@
       font-size: 22px;
       border:1px solid #bbf7d0;
     }
-    .actions{
-      display:flex; gap:10px; flex-wrap:wrap;
-      margin-top: 12px;
-    }
+    .actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 12px; }
     button{
       border: 1px solid var(--line);
       background: #fff;
@@ -56,42 +49,74 @@
       border-radius: 12px;
       font-size: 14px;
       cursor:pointer;
+      font-weight:700;
     }
     button.primary{
       border-color: transparent;
       background: var(--accent);
       color:#fff;
-      font-weight:700;
+      font-weight:800;
     }
-    .list{
+    .hr{ height:1px; background: var(--line); margin: 12px 0; }
+
+    /* ▼▼ 月間カレンダー ▼▼ */
+    .cal{
+      width:100%;
+      border-collapse: separate;
+      border-spacing: 6px;
       margin-top: 10px;
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
     }
-    @media (max-width: 700px){
-      .list{ grid-template-columns: 1fr; }
+    .cal th{
+      font-size: 12px;
+      color: var(--muted);
+      padding: 6px 0;
+      text-align:center;
     }
-    .item{
+    .cell{
+      background:#fff;
       border:1px solid var(--line);
       border-radius: 14px;
-      padding: 10px 12px;
-      background:#fff;
-      display:flex; justify-content:space-between; align-items:center;
-      gap:10px;
+      min-height: 78px;
+      padding: 8px;
+      vertical-align: top;
     }
-    .item .date{ font-weight:800; }
-    .item .act{
-      display:inline-flex; align-items:center; gap:8px;
-      font-weight:700;
+    .cell[data-out="true"]{ opacity:.35; }
+    .daynum{ font-weight:900; font-size: 13px; }
+    .badge2{
+      margin-top: 8px;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
       padding: 6px 10px;
       border-radius: 999px;
-      background: rgba(0,0,0,.04);
+      font-size: 12px;
+      font-weight:900;
       border:1px solid rgba(0,0,0,.06);
-      white-space:nowrap;
+      background: rgba(0,0,0,.03);
+      max-width: 100%;
     }
-    .muted{ color:var(--muted); font-size:12px; }
-    .hr{ height:1px; background: var(--line); margin: 12px 0; }
+    .badge2 .emoji{ font-size: 15px; }
+
+    .muted{ color:var(--muted); font-size:12px; line-height:1.5; }
+
+    /* エラー表示 */
+    .err{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius: 14px;
+      border:1px solid #fecaca;
+      background:#fff1f2;
+      color:#991b1b;
+      font-size: 12px;
+      display:none;
+      white-space: pre-wrap;
+    }
+
+    @media print{
+      .actions{ display:none; }
+      body{ background:#fff; }
+      .panel{ box-shadow:none; }
+    }
   </style>
 </head>
 <body>
@@ -101,7 +126,7 @@
         <div class="badge">✅</div>
         <div>
           <h1 id="title">保存しました</h1>
-          <div class="sub" id="desc">この月の内容を端末内に保存しました。</div>
+          <div class="sub" id="desc">「この月を保存」を押した内容が保存されています。</div>
         </div>
       </div>
 
@@ -115,93 +140,120 @@
 
       <div class="muted">保存内容のプレビュー（月間カレンダー）</div>
 
-<table class="cal" aria-label="保存した月のカレンダー">
-  <thead>
-    <tr>
-      <th style="color:#ef4444">日</th>
-      <th>月</th>
-      <th>火</th>
-      <th>水</th>
-      <th>木</th>
-      <th>金</th>
-      <th style="color:#3b82f6">土</th>
-    </tr>
-  </thead>
-  <tbody id="calBody"></tbody>
-</table>
+      <table class="cal" aria-label="保存した月のカレンダー">
+        <thead>
+          <tr>
+            <th style="color:#ef4444">日</th>
+            <th>月</th>
+            <th>火</th>
+            <th>水</th>
+            <th>木</th>
+            <th>金</th>
+            <th style="color:#3b82f6">土</th>
+          </tr>
+        </thead>
+        <tbody id="calBody"></tbody>
+      </table>
 
-<div class="muted" id="emptyNote" style="display:none; margin-top:10px;">
-  まだ何も入っていません。
-</div>
+      <div class="muted" id="emptyNote" style="display:none; margin-top:10px;">まだ何も入っていません。</div>
+      <div class="err" id="errBox"></div>
+    </div>
   </div>
 
 <script>
-  // 活動マスタ（index.html と同じにしておく）
+(() => {
+  // 活動マスタ（index.htmlと一致させる）
   const ACTIVITIES = [
-    { id:"off",   label:"お休み",     emoji:"😶", color:"#9ca3af" },
-    { id:"sport", label:"運動",       emoji:"🏃", color:"#3b82f6" },
-    { id:"craft", label:"工作",       emoji:"🎨", color:"#f59e0b" },
+    { id:"off",   label:"お休み",       emoji:"😶", color:"#9ca3af" },
+    { id:"sport", label:"運動",         emoji:"🏃", color:"#3b82f6" },
+    { id:"craft", label:"工作",         emoji:"🎨", color:"#f59e0b" },
     { id:"game",  label:"ルールゲーム", emoji:"🎲", color:"#a855f7" },
-    { id:"kara",  label:"カラオケ",   emoji:"🎤", color:"#ef4444" },
-    { id:"study", label:"学習",       emoji:"📚", color:"#16a34a" },
+    { id:"kara",  label:"カラオケ",     emoji:"🎤", color:"#ef4444" },
+    { id:"study", label:"学習",         emoji:"📚", color:"#16a34a" },
     { id:"planet",label:"プラネタリウム",emoji:"🪐", color:"#0ea5e9" },
     { id:"prog",  label:"プログラミング",emoji:"🤖", color:"#111827" },
   ];
+  const findAct = (id)=> ACTIVITIES.find(a=>a.id===id);
 
   const LS_PREFIX = "kanaria_calendar_v1";
   const monthKey = (y,m)=> `${LS_PREFIX}:${y}-${String(m+1).padStart(2,"0")}`;
-  const findAct = (id)=> ACTIVITIES.find(a=>a.id===id);
 
-  // クエリ取得
+  const title = document.getElementById("title");
+  const emptyNote = document.getElementById("emptyNote");
+  const calBody = document.getElementById("calBody");
+  const errBox = document.getElementById("errBox");
+
   const params = new URLSearchParams(location.search);
   const y = Number(params.get("y"));
   const m = Number(params.get("m")); // 1-12
   const month0 = m - 1;
 
-  const title = document.getElementById("title");
-  const desc = document.getElementById("desc");
-  const previewList = document.getElementById("previewList");
-  const emptyNote = document.getElementById("emptyNote");
-
   title.textContent = `${y}年 ${m}月 を保存しました`;
-  desc.textContent = `「この月を保存」を押した内容が保存されています。`;
 
   // 保存データ読み込み
   const raw = localStorage.getItem(monthKey(y, month0));
   const assignments = raw ? JSON.parse(raw) : {};
 
-  // プレビュー用に日付順に並べる
-  const entries = Object.entries(assignments)
-    .sort((a,b)=> a[0].localeCompare(b[0]));
+  // ここからカレンダー描画
+  const pad2 = (n)=> String(n).padStart(2,"0");
+  const ymd = (yy,mm,dd)=> `${yy}-${pad2(mm+1)}-${pad2(dd)}`;
 
-  if(entries.length === 0){
+  const first = new Date(y, month0, 1);
+  const last  = new Date(y, month0+1, 0);
+  const firstDow = first.getDay();
+
+  calBody.innerHTML = "";
+
+  if(Object.keys(assignments).length === 0){
     emptyNote.style.display = "block";
-  }else{
-    previewList.innerHTML = entries.map(([date, actId])=>{
-      const act = findAct(actId) || {label:"(不明)", emoji:"❓", color:"#999"};
-      const d = date.split("-")[2]; // 日
-      return `
-        <div class="item">
-          <div class="date">${m}/${Number(d)}</div>
-          <div class="act" style="background: color-mix(in oklab, ${act.color} 14%, #ffffff); border-color: color-mix(in oklab, ${act.color} 30%, #ffffff);">
-            <span>${act.emoji}</span><span>${act.label}</span>
-          </div>
-        </div>
-      `;
-    }).join("");
   }
 
-  // 戻る（index.html に月を渡す）
+  let day = 1 - firstDow;
+  for(let r=0; r<6; r++){
+    const tr = document.createElement("tr");
+
+    for(let c=0; c<7; c++, day++){
+      const td = document.createElement("td");
+      td.className = "cell";
+
+      const inMonth = (day>=1 && day<=last.getDate());
+      td.dataset.out = inMonth ? "false" : "true";
+
+      if(!inMonth){
+        td.innerHTML = `<div class="daynum"></div>`;
+        tr.appendChild(td);
+        continue;
+      }
+
+      const key = ymd(y, month0, day);
+      const actId = assignments[key];
+      const act = actId ? findAct(actId) : null;
+
+      td.innerHTML = `
+        <div class="daynum">${day}</div>
+        ${act ? `
+          <div class="badge2" style="background: color-mix(in oklab, ${act.color} 16%, #ffffff); border-color: color-mix(in oklab, ${act.color} 35%, #ffffff);">
+            <span class="emoji">${act.emoji}</span>
+            <span>${act.label}</span>
+          </div>
+        ` : ``}
+      `;
+      tr.appendChild(td);
+    }
+
+    calBody.appendChild(tr);
+
+    const hasInMonth = Array.from(tr.children).some(td => td.dataset.out === "false");
+    if(!hasInMonth) break;
+  }
+
+  // ボタン類
   document.getElementById("backBtn").addEventListener("click", ()=>{
     location.href = `index.html?y=${y}&m=${m}`;
   });
+  document.getElementById("printBtn").addEventListener("click", ()=> window.print());
 
-  // 印刷（仮：ブラウザ印刷）
-  document.getElementById("printBtn").addEventListener("click", ()=>{
-    window.print();
-  });
-
-  // 共有用URLコピー（今見ている saved.html のURL）
+  // 共有用URL（今は saved.html のURLをコピー：次にview.html方式にするならここを変更）
   document.getElementById("copyBtn").addEventListener("click", async ()=>{
     try{
       await navigator.clipboard.writeText(location.href);
@@ -210,6 +262,16 @@
       prompt("コピーできない場合は、下のURLをコピーしてください", location.href);
     }
   });
+
+})();
+
+// もしJSエラーが出たら画面に出す（iPhoneでデバッグしやすくする）
+window.addEventListener("error", (e) => {
+  const box = document.getElementById("errBox");
+  if(!box) return;
+  box.style.display = "block";
+  box.textContent = `エラーが発生しました:\n${e.message}\n${e.filename}:${e.lineno}`;
+});
 </script>
 </body>
 </html>
