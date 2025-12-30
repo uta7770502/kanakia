@@ -477,9 +477,14 @@
   });
 
   btnSave.addEventListener("click", ()=>{
-    localStorage.setItem(monthKey(viewYear, viewMonth), JSON.stringify(assignments));
-    showToast("この月を保存しました（この端末のブラウザ内）");
-  });
+  // 保存
+  localStorage.setItem(monthKey(viewYear, viewMonth), JSON.stringify(assignments));
+
+  // 保存した月を saved.html に渡す（URLクエリで渡す）
+  const y = viewYear;
+  const m = viewMonth + 1; // 表示用に1-12
+  location.href = `saved.html?y=${y}&m=${m}`;
+});
 
   btnClear.addEventListener("click", ()=>{
     assignments = {};
