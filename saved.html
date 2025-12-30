@@ -113,10 +113,26 @@
 
       <div class="hr"></div>
 
-      <div class="muted">保存内容のプレビュー（入っている日のみ表示）</div>
-      <div class="list" id="previewList"></div>
-      <div class="muted" id="emptyNote" style="display:none; margin-top:10px;">まだ何も入っていません。</div>
-    </div>
+      <div class="muted">保存内容のプレビュー（月間カレンダー）</div>
+
+<table class="cal" aria-label="保存した月のカレンダー">
+  <thead>
+    <tr>
+      <th style="color:#ef4444">日</th>
+      <th>月</th>
+      <th>火</th>
+      <th>水</th>
+      <th>木</th>
+      <th>金</th>
+      <th style="color:#3b82f6">土</th>
+    </tr>
+  </thead>
+  <tbody id="calBody"></tbody>
+</table>
+
+<div class="muted" id="emptyNote" style="display:none; margin-top:10px;">
+  まだ何も入っていません。
+</div>
   </div>
 
 <script>
