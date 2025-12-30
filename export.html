@@ -1,466 +1,292 @@
 <!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>配布用PDF｜カナリア通信</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>カナリア通信｜配布用PDF</title>
 
-  <style>
-    /* ===== A4印刷設定 ===== */
-    @page { size: A4; margin: 10mm; }
+<style>
+@page { size: A4; margin: 10mm; }
 
-    :root{
-      --text:#1a1a1a;
-      --muted:#6b7280;
-      --line:#e5e7eb;
-      --accent:#16a34a;
-      --bg:#f7f7fb;
-    }
+:root{
+  --paper:#fffdf7;
+  --ink:#1f2937;
+  --muted:#6b7280;
+  --line:#e5e7eb;
+  --sun:#ef4444;
+  --sat:#3b82f6;
+}
 
-    *{ box-sizing:border-box; }
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", sans-serif;
-      color: var(--text);
-      background: linear-gradient(180deg, #ffffff, var(--bg));
-    }
+*{ box-sizing:border-box; }
 
-    /* ===== 画面上のツールバー（PDF化時は消える） ===== */
-    .toolbar{
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background:#fff;
-      border-bottom:1px solid var(--line);
-      padding:10px 12px;
-      display:flex;
-      gap:10px;
-      align-items:center;
-      justify-content:space-between;
-      flex-wrap:wrap;
-    }
-    .toolbar .left{
-      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
-    }
-    .toolbar strong{ font-weight: 900; }
-    .toolbar small{ color: var(--muted); }
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",system-ui,sans-serif;
+  background:#f3f4f6;
+  color:var(--ink);
+}
 
-    .toolbar button{
-      border: 1px solid var(--line);
-      background: #fff;
-      color: #111;
-      padding: 10px 12px;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-    .toolbar button.primary{
-      background: var(--accent);
-      color:#fff;
-      border-color: transparent;
-    }
+/* ===== 画面用操作バー ===== */
+.toolbar{
+  position:sticky; top:0;
+  background:#fff;
+  border-bottom:1px solid var(--line);
+  padding:10px;
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  z-index:10;
+}
+.toolbar button{
+  padding:8px 14px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:#fff;
+  font-weight:800;
+}
+.toolbar button.primary{
+  background:#22c55e;
+  color:#fff;
+  border:none;
+}
 
-    @media print{
-      body{ background:#fff; }
-      .toolbar{ display:none; }
-    }
+@media print{
+  .toolbar{ display:none; }
+  body{ background:#fff; }
+}
 
-    /* ===== 配布物（紙） ===== */
-    .paper{
-      position: relative;
-      width: 190mm;                 /* A4(210) - margin左右(10*2) */
-      min-height: 277mm;            /* A4(297) - margin上下(10*2) */
-      margin: 12px auto 30px;
-      background:#fff;
-      overflow:hidden;
-      border-radius: 10px;
-      border: 1px solid #eef2ff;
-    }
+/* ===== 用紙 ===== */
+.paper{
+  width:190mm;
+  min-height:277mm;
+  margin:12px auto;
+  background:var(--paper);
+  border-radius:12px;
+  position:relative;
+  overflow:hidden;
+  border:1px solid #eee;
+}
 
-    /* 仮イラスト（ヘッダー/フッター） */
-    .bg-header{
-      position:absolute;
-      left:0; top:0;
-      width:100%;
-      height:40mm;
-      pointer-events:none;
-    }
-    .bg-footer{
-      position:absolute;
-      left:0; bottom:0;
-      width:100%;
-      height:45mm;
-      pointer-events:none;
-    }
+/* ===== ヘッダー仮イラスト ===== */
+.header-bg{
+  position:absolute;
+  top:0; left:0;
+  width:100%;
+  height:42mm;
+}
+.header-content{
+  position:relative;
+  padding:14mm 10mm 6mm;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.logo{
+  font-size:28px;
+}
+.title{
+  font-size:26px;
+  font-weight:900;
+}
+.subtitle{
+  font-size:12px;
+  color:var(--muted);
+}
 
-    /* 中身 */
-    .content{
-      position: relative;
-      padding: 42mm 8mm 52mm; /* 上はヘッダー分、下はフッター分 */
-    }
+/* ===== お知らせ ===== */
+.notice{
+  margin:4mm 10mm 6mm;
+  background:#fffbeb;
+  border:2px solid #fde68a;
+  border-radius:14px;
+  padding:6mm;
+  font-weight:800;
+  color:#92400e;
+}
 
-    .header-row{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom: 6mm;
-      flex-wrap:wrap;
-    }
-    .month-title{
-      font-size: 28px;
-      font-weight: 900;
-      margin: 0;
-      letter-spacing: .04em;
-      text-shadow: 0 1px 0 rgba(255,255,255,.8);
-    }
-    .pdf-chip{
-      border: 2px solid #bbf7d0;
-      background: #dcfce7;
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-weight: 900;
-      white-space: nowrap;
-    }
+/* ===== カレンダー ===== */
+.calendar{
+  margin:0 10mm;
+  border:2px solid var(--line);
+  border-radius:14px;
+  overflow:hidden;
+  background:#fff;
+}
 
-    .notice{
-      background: #fffbeb;
-      border: 2px solid #fde68a;
-      border-radius: 12px;
-      padding: 6mm 8mm;
-      font-weight: 900;
-      color: #92400e;
-      margin-bottom: 6mm;
-    }
+.dow{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  background:linear-gradient(#f8fafc,#fff);
+}
+.dow div{
+  text-align:center;
+  padding:6mm 0;
+  font-weight:900;
+}
+.dow .sun{ color:var(--sun); }
+.dow .sat{ color:var(--sat); }
 
-    /* ===== カレンダー（紙っぽい） ===== */
-    .calendar{
-      border: 2px solid var(--line);
-      border-radius: 14px;
-      overflow:hidden;
-      background:#fff;
-    }
-    .dow{
-      display:grid;
-      grid-template-columns: repeat(7, 1fr);
-      background: linear-gradient(180deg, #f8fafc, #ffffff);
-      border-bottom: 1px solid var(--line);
-    }
-    .dow div{
-      text-align:center;
-      padding: 5mm 0;
-      font-weight: 900;
-      color:#374151;
-      letter-spacing: .08em;
-    }
-    .dow .sun{ color:#ef4444; }
-    .dow .sat{ color:#3b82f6; }
+.grid{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+}
 
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(7, 1fr);
-    }
+.cell{
+  min-height:26mm;
+  padding:4mm;
+  border-right:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+}
+.cell:nth-child(7n){ border-right:none; }
+.cell.out{ background:#fafafa; color:#9ca3af; }
 
-    .cell{
-      min-height: 26mm;
-      border-right: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
-      padding: 4mm;
-      position: relative;
-      background:#fff;
-    }
-    .cell:nth-child(7n){ border-right:none; }
-    .cell.out{
-      background:#fafafa;
-      color:#9ca3af;
-    }
+.day{
+  font-weight:900;
+  font-size:12px;
+}
 
-    .day{
-      font-weight: 900;
-      font-size: 12px;
-    }
+/* 活動チップ */
+.act{
+  margin-top:5mm;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 10px;
+  border-radius:999px;
+  font-weight:900;
+  font-size:12px;
+  background:#e0f2fe;
+  border:1px solid rgba(0,0,0,.08);
+}
 
-    .act{
-      margin-top: 6mm;
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-weight: 900;
-      font-size: 12px;
-      border: 1px solid rgba(0,0,0,.06);
-      max-width: 100%;
-      white-space: nowrap;
-    }
-    .act .label{
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
+/* ===== フッター仮イラスト ===== */
+.footer-bg{
+  position:absolute;
+  bottom:0; left:0;
+  width:100%;
+  height:44mm;
+}
 
-    .foot{
-      margin-top: 8mm;
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 1.5;
-      border-top: 1px dashed var(--line);
-      padding-top: 4mm;
-    }
-
-    .warn{
-      margin-top: 8mm;
-      border: 1px solid #fecaca;
-      background:#fff1f2;
-      color:#991b1b;
-      border-radius: 12px;
-      padding: 10px 12px;
-      font-size: 12px;
-      display:none;
-      white-space: pre-wrap;
-    }
-  </style>
+/* ===== フッター文字 ===== */
+.foot{
+  position:relative;
+  margin:6mm 10mm 0;
+  font-size:11px;
+  color:var(--muted);
+  padding-bottom:46mm;
+}
+</style>
 </head>
 
 <body>
-  <!-- 画面用ツールバー（印刷時は消える） -->
-  <div class="toolbar">
-    <div class="left">
-      <strong id="toolTitle">配布用PDF</strong>
-      <small id="toolSub">このページを「印刷」→「PDFに保存」で配布できます。</small>
-    </div>
-    <div class="right">
-      <button id="backBtn">戻る</button>
-      <button class="primary" id="pdfBtn">PDF出力</button>
-      <button id="copyBtn">共有URLコピー</button>
+
+<div class="toolbar">
+  <div><strong>カナリア通信（配布用）</strong></div>
+  <div>
+    <button id="backBtn">戻る</button>
+    <button class="primary" onclick="window.print()">PDF出力</button>
+  </div>
+</div>
+
+<div class="paper">
+
+  <!-- ヘッダー背景 -->
+  <svg class="header-bg" viewBox="0 0 800 160" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#dbeafe"/>
+        <stop offset="100%" stop-color="#ffffff"/>
+      </linearGradient>
+    </defs>
+    <rect width="800" height="160" fill="url(#g)"/>
+    <text x="60" y="90" font-size="36">🐤</text>
+    <text x="110" y="95" font-size="42" font-weight="900" fill="#1f2937">カナリア通信</text>
+  </svg>
+
+  <!-- ヘッダー文字 -->
+  <div class="header-content">
+    <div class="logo">📅</div>
+    <div>
+      <div class="title" id="monthTitle">----</div>
+      <div class="subtitle">放課後等デイサービス 月間予定表</div>
     </div>
   </div>
 
-  <div class="paper" id="paper">
-    <!-- ▼ 仮イラスト：ヘッダー -->
-    <svg class="bg-header" viewBox="0 0 800 160" preserveAspectRatio="none" aria-hidden="true">
-      <defs>
-        <linearGradient id="gSky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#dbeafe"/>
-          <stop offset="100%" stop-color="#ffffff"/>
-        </linearGradient>
-        <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="3"/>
-        </filter>
-      </defs>
-
-      <rect x="0" y="0" width="800" height="160" fill="url(#gSky)"/>
-      <!-- ふわふわ雲 -->
-      <g opacity="0.35" filter="url(#soft)">
-        <ellipse cx="120" cy="55" rx="70" ry="22" fill="#fff"/>
-        <ellipse cx="170" cy="58" rx="55" ry="18" fill="#fff"/>
-        <ellipse cx="610" cy="50" rx="70" ry="22" fill="#fff"/>
-        <ellipse cx="660" cy="55" rx="55" ry="18" fill="#fff"/>
-      </g>
-
-      <!-- 鳥 -->
-      <circle cx="72" cy="80" r="36" fill="#fde68a" opacity="0.95"/>
-      <text x="72" y="90" text-anchor="middle" font-size="30">🐤</text>
-
-      <!-- タイトル装飾 -->
-      <text x="135" y="95" font-size="44" font-weight="900" fill="#1f2937">カナリア通信</text>
-
-      <!-- 右上の「PDF出力」風 -->
-      <g>
-        <rect x="610" y="40" rx="18" ry="18" width="160" height="56" fill="#dcfce7" stroke="#bbf7d0" stroke-width="3"/>
-        <text x="690" y="76" text-anchor="middle" font-size="20" font-weight="900" fill="#166534">PDF出力</text>
-      </g>
-    </svg>
-
-    <div class="content">
-      <div class="header-row">
-        <h1 class="month-title" id="monthTitle">----年--月</h1>
-        <div class="pdf-chip">配布用（印刷 / PDF）</div>
-      </div>
-
-      <div class="notice">📣 カレンダーを作成しました！プリントアウトや共有ができます♪</div>
-
-      <div class="calendar">
-        <div class="dow">
-          <div class="sun">日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div class="sat">土</div>
-        </div>
-        <div class="grid" id="calendarGrid"></div>
-      </div>
-
-      <div class="foot" id="footNote">
-        ※このページは配布用の「見本」です。内容は保存された予定（または共有URLのデータ）から生成されます。<br>
-        ※PDFにする時は「PDF出力」→印刷ダイアログで「PDFに保存」を選んでください。
-      </div>
-
-      <div class="warn" id="warnBox"></div>
-    </div>
-
-    <!-- ▼ 仮イラスト：フッター -->
-    <svg class="bg-footer" viewBox="0 0 800 200" preserveAspectRatio="none" aria-hidden="true">
-      <defs>
-        <linearGradient id="gSea" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#ecfeff"/>
-          <stop offset="100%" stop-color="#ffffff"/>
-        </linearGradient>
-      </defs>
-
-      <rect x="0" y="0" width="800" height="200" fill="url(#gSea)"/>
-
-      <!-- 芝生/地面っぽい -->
-      <path d="M0,120 C120,90 220,150 360,120 C520,80 620,150 800,110 L800,200 L0,200 Z"
-            fill="#dcfce7" opacity="0.9"/>
-
-      <!-- 遊びアイコン -->
-      <text x="120" y="160" font-size="36">⚽️</text>
-      <text x="190" y="168" font-size="34">🎨</text>
-      <text x="260" y="160" font-size="34">🎲</text>
-      <text x="330" y="168" font-size="34">🤖</text>
-
-      <!-- 子どもっぽい丸 -->
-      <circle cx="620" cy="150" r="22" fill="#93c5fd"/>
-      <circle cx="670" cy="150" r="22" fill="#fca5a5"/>
-      <text x="645" y="170" text-anchor="middle" font-size="18">🙂🙂</text>
-    </svg>
+  <div class="notice">
+    📣 カレンダーを作成しました！ご家庭での確認・掲示・共有にご利用ください。
   </div>
+
+  <div class="calendar">
+    <div class="dow">
+      <div class="sun">日</div><div>月</div><div>火</div><div>水</div>
+      <div>木</div><div>金</div><div class="sat">土</div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <div class="foot">
+    ※ 内容は変更になる場合があります。<br>
+    ※ このプリントは自動生成されています。
+  </div>
+
+  <!-- フッター背景 -->
+  <svg class="footer-bg" viewBox="0 0 800 200" preserveAspectRatio="none">
+    <rect width="800" height="200" fill="#ecfeff"/>
+    <text x="120" y="150" font-size="36">⚽️</text>
+    <text x="200" y="155" font-size="36">🎨</text>
+    <text x="280" y="150" font-size="36">🤖</text>
+    <text x="360" y="155" font-size="36">🎤</text>
+  </svg>
+
+</div>
 
 <script>
 (() => {
-  // ========= 活動マスタ（index/savedと揃える） =========
-  const ACTIVITIES = [
-    { id:"off",   label:"お休み",       emoji:"😶", color:"#9ca3af" },
-    { id:"sport", label:"運動",         emoji:"🏃", color:"#3b82f6" },
-    { id:"craft", label:"工作",         emoji:"🎨", color:"#f59e0b" },
-    { id:"game",  label:"ルールゲーム", emoji:"🎲", color:"#a855f7" },
-    { id:"kara",  label:"カラオケ",     emoji:"🎤", color:"#ef4444" },
-    { id:"study", label:"学習",         emoji:"📚", color:"#16a34a" },
-    { id:"planet",label:"プラネタリウム",emoji:"🪐", color:"#0ea5e9" },
-    { id:"prog",  label:"プログラミング",emoji:"🤖", color:"#111827" },
-  ];
-  const findAct = (id) => ACTIVITIES.find(a => a.id === id);
+  const ACTS = {
+    off:{l:"お休み",e:"😶",c:"#e5e7eb"},
+    sport:{l:"運動",e:"🏃",c:"#dbeafe"},
+    craft:{l:"工作",e:"🎨",c:"#fde68a"},
+    game:{l:"ルールゲーム",e:"🎲",c:"#e9d5ff"},
+    kara:{l:"カラオケ",e:"🎤",c:"#fecaca"},
+    study:{l:"学習",e:"📚",c:"#bbf7d0"},
+    planet:{l:"プラネタリウム",e:"🪐",c:"#bae6fd"},
+    prog:{l:"プログラミング",e:"🤖",c:"#e5e7eb"}
+  };
 
-  // ========= localStorageキー（保存済みデータ読めるように） =========
-  const LS_PREFIX = "kanaria_calendar_v1";
-  const monthKey = (y,m)=> `${LS_PREFIX}:${y}-${String(m+1).padStart(2,"0")}`;
+  const p = new URLSearchParams(location.search);
+  const y = Number(p.get("y")) || new Date().getFullYear();
+  const m = Number(p.get("m")) || new Date().getMonth()+1;
+  const key = `kanaria_calendar_v1:${y}-${String(m).padStart(2,"0")}`;
 
-  // ========= util =========
-  const pad2 = (n)=> String(n).padStart(2,"0");
-  const ymd  = (y,m,d)=> `${y}-${pad2(m+1)}-${pad2(d)}`;
+  document.getElementById("monthTitle").textContent = `${y}年 ${m}月`;
 
-  function b64EncodeUtf8(str){
-    const bytes = new TextEncoder().encode(str);
-    let bin = "";
-    bytes.forEach(b => bin += String.fromCharCode(b));
-    return btoa(bin);
-  }
-  function b64DecodeUtf8(b64){
-    const bin = atob(b64);
-    const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
-    return new TextDecoder().decode(bytes);
-  }
+  const data = JSON.parse(localStorage.getItem(key) || "{}");
 
-  // ========= パラメータ取得 =========
-  // export.html?y=2025&m=12&data=....(base64 json)
-  const params = new URLSearchParams(location.search);
-  const y = Number(params.get("y"));
-  const m = Number(params.get("m")); // 1-12
-  const data = params.get("data");   // base64 JSON (assignments)
+  const first = new Date(y, m-1, 1);
+  const last = new Date(y, m, 0);
+  const start = 1 - first.getDay();
 
-  const warnBox = document.getElementById("warnBox");
-  const monthTitle = document.getElementById("monthTitle");
-  const toolTitle = document.getElementById("toolTitle");
+  const grid = document.getElementById("grid");
 
-  // y,mが無ければ現月
-  const now = new Date();
-  const year = Number.isFinite(y) && y > 0 ? y : now.getFullYear();
-  const month1 = Number.isFinite(m) && m >= 1 && m <= 12 ? m : (now.getMonth()+1);
-  const month0 = month1 - 1;
-
-  monthTitle.textContent = `${year}年${month1}月`;
-  toolTitle.textContent  = `配布用PDF：${year}年${month1}月`;
-
-  // ========= assignments 読み込み（共有URL優先 → なければlocalStorage） =========
-  let assignments = {};
-  try{
-    if(data){
-      assignments = JSON.parse(b64DecodeUtf8(data));
-    }else{
-      const raw = localStorage.getItem(monthKey(year, month0));
-      assignments = raw ? JSON.parse(raw) : {};
-    }
-  }catch(e){
-    assignments = {};
-    warnBox.style.display = "block";
-    warnBox.textContent = "共有データの読み込みに失敗しました。\nURLが途中で切れている可能性があります。";
-  }
-
-  // ========= カレンダー描画 =========
-  const first = new Date(year, month0, 1);
-  const last  = new Date(year, month0+1, 0);
-  const firstDow = first.getDay();
-
-  const grid = document.getElementById("calendarGrid");
-  grid.innerHTML = "";
-
-  // 6週(42マス)固定で作ると印刷が安定
-  let startDay = 1 - firstDow;
-  for(let i=0; i<42; i++){
-    const d = startDay + i;
-    const inMonth = (d >= 1 && d <= last.getDate());
-
+  for(let i=0;i<42;i++){
+    const d = start + i;
+    const inMonth = d>=1 && d<=last.getDate();
     const cell = document.createElement("div");
-    cell.className = "cell" + (inMonth ? "" : " out");
-
-    if(!inMonth){
-      cell.innerHTML = `<div class="day">&nbsp;</div>`;
-      grid.appendChild(cell);
-      continue;
+    cell.className = "cell" + (inMonth?"":" out");
+    if(inMonth){
+      const id = data[`${y}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")}`];
+      const act = ACTS[id];
+      cell.innerHTML = `<div class="day">${d}</div>` + (act?`
+        <div class="act" style="background:${act.c}">
+          <span>${act.e}</span><span>${act.l}</span>
+        </div>`:"");
     }
-
-    const key = ymd(year, month0, d);
-    const actId = assignments[key];
-    const act = actId ? findAct(actId) : null;
-
-    cell.innerHTML = `
-      <div class="day">${d}</div>
-      ${act ? `
-        <div class="act" style="background: color-mix(in oklab, ${act.color} 16%, #ffffff); border-color: color-mix(in oklab, ${act.color} 35%, #ffffff);">
-          <span>${act.emoji}</span>
-          <span class="label">${act.label}</span>
-        </div>
-      ` : ``}
-    `;
     grid.appendChild(cell);
   }
 
-  // ========= ボタン =========
-  // 戻る：saved.htmlがある前提（なければindexへ）
-  document.getElementById("backBtn").addEventListener("click", ()=>{
-    // export.html は共有でも開かれるので、戻り先は安全側で index にする
-    location.href = `index.html?y=${year}&m=${month1}`;
-  });
-
-  // PDF出力：ブラウザの印刷を呼ぶ
-  document.getElementById("pdfBtn").addEventListener("click", ()=>{
-    window.print();
-  });
-
-  // 共有URLコピー：data付きURLを生成してコピー
-  document.getElementById("copyBtn").addEventListener("click", async ()=>{
-    const json = JSON.stringify(assignments);
-    const b64 = b64EncodeUtf8(json);
-
-    // 同じフォルダ基準で export.html を作る
-    const base = location.href.replace(/\/[^\/]*$/, "/");
-    const shareUrl = `${base}export.html?y=${year}&m=${month1}&data=${encodeURIComponent(b64)}`;
-
-    try{
-      await navigator.clipboard.writeText(shareUrl);
-      alert("共有用URLをコピーしました（このURLを送ると同じ見た目でPDF化できます）");
-    }catch(e){
-      prompt("コピーできない場合は、下のURLをコピーしてください", shareUrl);
-    }
-  });
+  document.getElementById("backBtn").onclick = ()=>history.back();
 })();
 </script>
+
 </body>
 </html>
