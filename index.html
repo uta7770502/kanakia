@@ -1,273 +1,54 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>活動カレンダー作成</title>
-
-<style>
-body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP",sans-serif;
-  background:#f5f6f8;
-}
-
-/* ===== ヘッダー ===== */
-header{
-  background:#4fc3c7;
-  color:#fff;
-  text-align:center;
-  padding:16px;
-  font-weight:700;
-}
-
-/* ===== アクション一覧 ===== */
-.section{
-  padding:16px;
-}
-.grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:14px;
-}
-.card{
-  background:#fff;
-  border-radius:18px;
-  padding:14px 8px 12px;
-  text-align:center;
-  box-shadow:0 6px 16px rgba(0,0,0,.08);
-  cursor:pointer;
-}
-.icon{
-  width:70px;
-  height:70px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:36px;
-  margin:0 auto 8px;
-}
-.label{
-  font-weight:700;
-}
-
-/* ===== カレンダー ===== */
-.calendar{
-  background:#fff;
-  margin:16px;
-  border-radius:18px;
-  padding:14px;
-}
-.cal-grid{
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-  gap:8px;
-}
-.day{
-  height:70px;
-  border-radius:12px;
-  background:#f2f3f5;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  font-size:13px;
-  cursor:pointer;
-}
-.day span{
-  margin-top:4px;
-  font-size:11px;
-}
-
-/* ===== モーダル ===== */
+/* モーダル背景 */
 .modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.35);
-  display:none;
-  justify-content:center;
-  align-items:flex-start;
-  padding:18px;
-  z-index:9999;
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(0,0,0,.35);
+  z-index: 9999;
 
-  overflow:auto;
-  -webkit-overflow-scrolling:touch;
+  overflow: auto; /* ← これが重要 */
+  -webkit-overflow-scrolling: touch;
 }
-.modal.show{display:flex;}
+.modal.show{ display:flex; }
 
+/* モーダル本体 */
 .modal-card{
-  width:min(680px,100%);
-  background:#fff;
-  border-radius:18px;
-  max-height:calc(100vh - 48px);
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
+  width: min(700px, 100%);
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+
+  max-height: calc(100vh - 48px); /* ← これが重要 */
+  display: flex;
+  flex-direction: column;
 }
 
+/* ヘッダー固定 */
 .modal-head{
-  padding:14px;
-  border-bottom:1px solid #eee;
-  font-weight:700;
-  position:sticky;
-  top:0;
-  background:#fff;
-  z-index:2;
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 2;
+  padding: 14px;
+  border-bottom: 1px solid #e6e6e6;
 }
 
+/* 中身だけスクロール */
 .modal-body{
-  padding:14px;
-  overflow:auto;
-  -webkit-overflow-scrolling:touch;
+  overflow: auto; /* ← これが重要 */
+  -webkit-overflow-scrolling: touch;
+  padding: 14px;
 }
 
+/* 下のボタンを固定して常に押せるように */
 .modal-foot{
-  padding:12px;
-  border-top:1px solid #eee;
-  position:sticky;
-  bottom:0;
-  background:#fff;
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  z-index: 2;
+  padding: 12px 14px 14px;
+  border-top: 1px solid #e6e6e6;
 }
-
-.action-item{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  background:#f7f8fa;
-  border-radius:14px;
-  padding:10px 12px;
-  margin-bottom:10px;
-}
-.action-item span{
-  font-size:22px;
-  margin-right:10px;
-}
-.del{
-  background:#ff6b6b;
-  color:#fff;
-  border:none;
-  border-radius:10px;
-  padding:6px 10px;
-}
-
-input{
-  width:100%;
-  padding:10px;
-  border-radius:10px;
-  border:1px solid #ccc;
-  margin-bottom:10px;
-}
-
-button.primary{
-  width:100%;
-  padding:12px;
-  border-radius:14px;
-  border:none;
-  background:#4caf50;
-  color:#fff;
-  font-weight:700;
-}
-</style>
-</head>
-
-<body>
-
-<header>活動カレンダー作成</header>
-
-<section class="section">
-  <div class="grid">
-    <div class="card" onclick="openModal('運動','🏃')"><div class="icon" style="background:#ff8a65">🏃</div><div class="label">運動</div></div>
-    <div class="card" onclick="openModal('指先課題','✋')"><div class="icon" style="background:#9575cd">✋</div><div class="label">指先課題</div></div>
-    <div class="card" onclick="openModal('集中課題','🧠')"><div class="icon" style="background:#4db6ac">🧠</div><div class="label">集中課題</div></div>
-    <div class="card" onclick="openModal('工作','🎨')"><div class="icon" style="background:#fbc02d">🎨</div><div class="label">工作</div></div>
-    <div class="card" onclick="openModal('料理','🍳')"><div class="icon" style="background:#66bb6a">🍳</div><div class="label">料理</div></div>
-    <div class="card" onclick="openModal('おやつ作り','🍪')"><div class="icon" style="background:#ffb74d">🍪</div><div class="label">おやつ作り</div></div>
-    <div class="card" onclick="openModal('ルールゲーム','🎲')"><div class="icon" style="background:#64b5f6">🎲</div><div class="label">ルールゲーム</div></div>
-    <div class="card" onclick="openModal('生活学習','🏠')"><div class="icon" style="background:#aed581">🏠</div><div class="label">生活学習</div></div>
-    <div class="card" onclick="openModal('外出','🚌')"><div class="icon" style="background:#90a4ae">🚌</div><div class="label">外出</div></div>
-  </div>
-</section>
-
-<section class="calendar">
-  <div class="cal-grid">
-    <div class="day">1<span id="d1"></span></div>
-    <div class="day">2<span id="d2"></span></div>
-    <div class="day">3<span id="d3"></span></div>
-    <div class="day">4<span id="d4"></span></div>
-    <div class="day">5<span id="d5"></span></div>
-    <div class="day">6<span id="d6"></span></div>
-    <div class="day">7<span id="d7"></span></div>
-  </div>
-</section>
-
-<!-- ===== モーダル ===== -->
-<div class="modal" id="modal">
-  <div class="modal-card">
-    <div class="modal-head" id="modalTitle">アクション</div>
-
-    <div class="modal-body" id="modalList"></div>
-
-    <div class="modal-foot">
-      <input id="newName" placeholder="アクション名">
-      <input id="newEmoji" placeholder="絵文字">
-      <button class="primary" onclick="addAction()">追加</button>
-      <button class="primary" style="background:#999;margin-top:8px" onclick="closeModal()">戻る</button>
-    </div>
-  </div>
-</div>
-
-<script>
-let currentCategory = "";
-let actions = {};
-
-function openModal(cat, icon){
-  currentCategory = cat;
-  if(!actions[cat]){
-    actions[cat] = [
-      {name:cat+"①",emoji:icon},
-      {name:cat+"②",emoji:icon},
-      {name:cat+"③",emoji:icon}
-    ];
-  }
-  document.getElementById("modalTitle").innerText = cat + " のアクション";
-  renderActions();
-  document.getElementById("modal").classList.add("show");
-  document.body.style.overflow="hidden";
-}
-
-function closeModal(){
-  document.getElementById("modal").classList.remove("show");
-  document.body.style.overflow="";
-}
-
-function renderActions(){
-  const list = document.getElementById("modalList");
-  list.innerHTML="";
-  actions[currentCategory].forEach((a,i)=>{
-    const div=document.createElement("div");
-    div.className="action-item";
-    div.innerHTML=`<div><span>${a.emoji}</span>${a.name}</div>
-    <button class="del" onclick="delAction(${i})">削除</button>`;
-    list.appendChild(div);
-  });
-}
-
-function addAction(){
-  const n=document.getElementById("newName").value;
-  const e=document.getElementById("newEmoji").value;
-  if(!n||!e)return;
-  actions[currentCategory].push({name:n,emoji:e});
-  document.getElementById("newName").value="";
-  document.getElementById("newEmoji").value="";
-  renderActions();
-}
-
-function delAction(i){
-  actions[currentCategory].splice(i,1);
-  renderActions();
-}
-</script>
-
-</body>
-</html>
