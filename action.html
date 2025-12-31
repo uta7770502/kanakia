@@ -16,7 +16,6 @@
     --line:#e9edf2;
     --text:#222;
     --muted:#6b7280;
-    --sel:#4fc3c7;
   }
   *{box-sizing:border-box}
   body{
@@ -25,7 +24,6 @@
     background:var(--bg);
     color:var(--text);
   }
-
   header{
     background:var(--header);
     color:#fff;
@@ -34,11 +32,7 @@
     font-size:20px;
     font-weight:800;
   }
-
-  .wrap{
-    max-width: 980px;
-    margin: 0 auto;
-  }
+  .wrap{ max-width: 980px; margin: 0 auto; }
 
   /* 上部：タイトル/操作 */
   .top{
@@ -48,15 +42,11 @@
     justify-content:space-between;
     gap:12px;
   }
-  .brand{
-    display:flex; gap:10px; align-items:flex-start;
-  }
+  .brand{ display:flex; gap:10px; align-items:flex-start; }
   .brand .bird{font-size:26px; line-height:1}
   .brand .t1{font-weight:900; font-size:16px}
   .brand .t2{color:var(--muted); font-size:12px; margin-top:2px}
-  .controls{
-    display:flex; gap:10px; align-items:center;
-  }
+  .controls{ display:flex; gap:10px; align-items:center; }
   select{
     border:1px solid var(--line);
     border-radius:12px;
@@ -102,39 +92,35 @@
     margin-bottom:10px;
   }
 
-  /* ===== アイコン（小さめに変更） ===== */
-  .action-grid{
+  /* 9ジャンルグリッド（トップページと同テイスト） */
+  .genre-grid{
     display:grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 14px;           /* ←少し詰める */
+    gap: 14px;
   }
-  .action-item{
+  .genre-item{
     background:#fff;
     border:1px solid var(--line);
     border-radius:18px;
-    padding:14px 8px 12px; /* ←少し小さく */
+    padding:14px 8px 12px;
     text-align:center;
     box-shadow:0 6px 14px rgba(0,0,0,0.06);
     cursor:pointer;
     user-select:none;
   }
-  .action-item:active{ transform: translateY(1px); }
-  .action-item.active{
-    outline:3px solid rgba(79,195,199,.35);
-    border-color: rgba(79,195,199,.6);
-  }
-  .action-icon{
-    width: 62px;   /* ←ここを小さく */
-    height: 62px;  /* ←ここを小さく */
+  .genre-item:active{ transform: translateY(1px); }
+  .genre-icon{
+    width: 62px;
+    height: 62px;
     border-radius:50%;
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:30px; /* ←少し小さく */
+    font-size:30px;
     margin: 0 auto 8px;
   }
-  .action-label{
-    font-size:13px; /* ←少し小さく */
+  .genre-label{
+    font-size:13px;
     font-weight:900;
   }
 
@@ -149,7 +135,7 @@
   .bg-lime  { background:#aed581; }
   .bg-gray  { background:#90a4ae; }
 
-  /* 現在選択表示 */
+  /* 状態表示 */
   .status{
     margin-top:10px;
     padding-top:10px;
@@ -182,15 +168,12 @@
     font-weight:900;
     font-size:16px;
   }
-  .nav{
-    display:flex; gap:8px;
-  }
+  .nav{ display:flex; gap:8px; }
   .nav .btn{
     padding:8px 12px;
     font-weight:900;
     border-radius:12px;
   }
-
   .week{
     display:grid;
     grid-template-columns: repeat(7, 1fr);
@@ -244,10 +227,10 @@
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
-    max-width: 78px;
+    max-width: 90px;
   }
 
-  /* タグ色（活動ごと） */
+  /* タグ色（ジャンルに合わせる） */
   .t-orange{ background:rgba(255,138,101,.22); border-color:rgba(255,138,101,.35); }
   .t-purple{ background:rgba(149,117,205,.22); border-color:rgba(149,117,205,.35); }
   .t-teal  { background:rgba(77,182,172,.22);  border-color:rgba(77,182,172,.35); }
@@ -263,6 +246,96 @@
     color:var(--muted);
     font-size:12px;
   }
+
+  /* ===== モーダル（ポップアップ） ===== */
+  .modal{
+    position:fixed;
+    inset:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:18px;
+    background:rgba(0,0,0,.35);
+    z-index:9999;
+  }
+  .modal.show{ display:flex; }
+  .modal-card{
+    width:min(560px, 100%);
+    background:#fff;
+    border-radius:18px;
+    box-shadow:0 18px 40px rgba(0,0,0,.2);
+    overflow:hidden;
+  }
+  .modal-head{
+    padding:14px 14px 12px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    border-bottom:1px solid var(--line);
+  }
+  .modal-title{
+    display:flex; align-items:center; gap:10px;
+    font-weight:900;
+  }
+  .badge{
+    width:36px;height:36px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:18px;color:#111;
+  }
+  .modal-body{
+    padding:14px;
+  }
+  .action6{
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap:12px;
+  }
+  .act-btn{
+    border:1px solid var(--line);
+    background:#fff;
+    border-radius:16px;
+    padding:12px 12px;
+    text-align:left;
+    display:flex;
+    gap:10px;
+    align-items:center;
+    cursor:pointer;
+    box-shadow:0 6px 14px rgba(0,0,0,.06);
+  }
+  .act-btn:active{ transform: translateY(1px); }
+  .act-emo{
+    width:42px;height:42px;border-radius:14px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:20px;
+    flex:0 0 auto;
+  }
+  .act-name{
+    font-weight:900;
+    font-size:14px;
+    line-height:1.2;
+  }
+  .act-sub{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:2px;
+  }
+  .modal-foot{
+    padding:12px 14px 14px;
+    border-top:1px solid var(--line);
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+  }
+  .btn.close{
+    background:#fff;
+    border:1px solid var(--line);
+    color:#111;
+  }
+
+  @media (max-width:420px){
+    .action6{ grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 
@@ -275,7 +348,7 @@
       <div class="bird">🐤</div>
       <div>
         <div class="t1">カナリア通信｜活動カレンダー</div>
-        <div class="t2">活動を選んで、日付をタップするだけ。共有用ページやPDFも作れます。</div>
+        <div class="t2">ジャンルを押す → ポップアップから活動を選ぶ → 日付をタップで反映</div>
       </div>
     </div>
 
@@ -286,17 +359,17 @@
     </div>
   </div>
 
-  <!-- ① 活動を選ぶ -->
+  <!-- ① ジャンルを選ぶ -->
   <div class="section">
-    <h3>① 活動を選ぶ</h3>
+    <h3>① 活動ジャンルを選ぶ</h3>
     <div class="help">
-      まず活動を1つ選んでください。次にカレンダーの日付をタップすると、その活動が入ります。<br>
-      （例：運動を選ぶ → 12/7 をタップ → 12/7 が「運動」になる）
+      9つのジャンルをタップすると、ポップアップが開きます。そこで6つの活動から1つ選ぶと「選択中の活動」になります。<br>
+      そのあと、下のカレンダーの日付をタップすると反映されます。
     </div>
 
-    <div class="action-grid" id="actionGrid"></div>
+    <div class="genre-grid" id="genreGrid"></div>
 
-    <div class="status" id="status">
+    <div class="status">
       <span class="muted">選択中の活動：</span>
       <span class="pill" id="currentPill">なし</span><br>
       <span class="muted">直近で選んだ日付：</span>
@@ -319,40 +392,154 @@
     </div>
     <div class="days" id="days"></div>
 
-    <div class="hint">※ 活動を選択してから日付をタップすると反映されます。もう一度タップで上書きできます。</div>
+    <div class="hint">※ 先に活動を選んでから日付をタップしてください。タップで上書きできます。</div>
+  </div>
+</div>
+
+<!-- ===== モーダル ===== -->
+<div class="modal" id="modal">
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-head">
+      <div class="modal-title" id="modalTitleWrap">
+        <div class="badge" id="modalBadge">🎯</div>
+        <div id="modalTitle">活動を選ぶ</div>
+      </div>
+      <button class="btn close" id="modalX" style="padding:8px 12px;border-radius:12px;">閉じる</button>
+    </div>
+    <div class="modal-body">
+      <div class="help" id="modalHelp" style="margin:0 0 10px;">
+        6つの活動から選んでください。選ぶと「選択中の活動」にセットされます。
+      </div>
+      <div class="action6" id="modalActions"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn close" id="modalBack">このページに戻る</button>
+    </div>
   </div>
 </div>
 
 <script>
-/* ===== 活動マスタ（トップと同じ見た目） ===== */
-const ACTIVITIES = [
-  { id:"sport", label:"運動", emoji:"🏃", iconBg:"bg-orange", tag:"t-orange" },
-  { id:"finger", label:"指先課題", emoji:"✋", iconBg:"bg-purple", tag:"t-purple" },
-  { id:"focus", label:"集中課題", emoji:"🧠", iconBg:"bg-teal", tag:"t-teal" },
-  { id:"craft", label:"工作", emoji:"🎨", iconBg:"bg-yellow", tag:"t-yellow" },
-  { id:"cook", label:"料理", emoji:"🍳", iconBg:"bg-green", tag:"t-green" },
-  { id:"snack", label:"おやつ作り", emoji:"🍪", iconBg:"bg-brown", tag:"t-brown" },
-  { id:"rule", label:"ルールゲーム", emoji:"🎲", iconBg:"bg-blue", tag:"t-blue" },
-  { id:"life", label:"生活学習", emoji:"🏠", iconBg:"bg-lime", tag:"t-lime" },
-  { id:"out", label:"外出", emoji:"🚌", iconBg:"bg-gray", tag:"t-gray" },
+/* ============================
+   9ジャンル + 各ジャンル6アクション
+   ※ ここをあなたの施設の実情に合わせて差し替えOK
+============================ */
+const GENRES = [
+  {
+    id:"sport", label:"運動", emoji:"🏃", iconBg:"bg-orange", tag:"t-orange",
+    actions:[
+      { id:"sport-run",   label:"かけっこ", emoji:"🏃‍♂️", sub:"体力づくり" },
+      { id:"sport-ball",  label:"ボール遊び", emoji:"⚽️", sub:"協調・ルール" },
+      { id:"sport-dance", label:"ダンス", emoji:"💃", sub:"リズム・表現" },
+      { id:"sport-gym",   label:"サーキット", emoji:"🤸", sub:"運動機能" },
+      { id:"sport-walk",  label:"散歩", emoji:"🚶", sub:"気分転換" },
+      { id:"sport-game",  label:"運動ゲーム", emoji:"🏸", sub:"楽しく運動" },
+    ]
+  },
+  {
+    id:"finger", label:"指先課題", emoji:"✋", iconBg:"bg-purple", tag:"t-purple",
+    actions:[
+      { id:"finger-cut",  label:"はさみ", emoji:"✂️", sub:"巧緻性" },
+      { id:"finger-fold", label:"折り紙", emoji:"📄", sub:"手順・集中" },
+      { id:"finger-bead", label:"ひも通し", emoji:"🧵", sub:"指先操作" },
+      { id:"finger-peg",  label:"洗濯ばさみ", emoji:"📎", sub:"つまむ練習" },
+      { id:"finger-clay", label:"粘土", emoji:"🧱", sub:"握る・こねる" },
+      { id:"finger-puzzle",label:"パズル", emoji:"🧩", sub:"形合わせ" },
+    ]
+  },
+  {
+    id:"focus", label:"集中課題", emoji:"🧠", iconBg:"bg-teal", tag:"t-teal",
+    actions:[
+      { id:"focus-worksheet", label:"ワーク", emoji:"📝", sub:"机上課題" },
+      { id:"focus-maze",      label:"迷路", emoji:"🌀", sub:"注意・計画" },
+      { id:"focus-math",      label:"数あそび", emoji:"🔢", sub:"数概念" },
+      { id:"focus-letter",    label:"ことば", emoji:"🔤", sub:"文字" },
+      { id:"focus-memory",    label:"記憶ゲーム", emoji:"🧠", sub:"記憶・集中" },
+      { id:"focus-time",      label:"時計", emoji:"🕒", sub:"時間理解" },
+    ]
+  },
+  {
+    id:"craft", label:"工作", emoji:"🎨", iconBg:"bg-yellow", tag:"t-yellow",
+    actions:[
+      { id:"craft-paint", label:"ぬり絵", emoji:"🖍️", sub:"表現" },
+      { id:"craft-paper", label:"紙工作", emoji:"📎", sub:"制作" },
+      { id:"craft-season",label:"季節制作", emoji:"🎏", sub:"行事" },
+      { id:"craft-collage",label:"コラージュ", emoji:"📰", sub:"貼る" },
+      { id:"craft-mask",  label:"お面", emoji:"🎭", sub:"ごっこ遊び" },
+      { id:"craft-card",  label:"カード作り", emoji:"💌", sub:"プレゼント" },
+    ]
+  },
+  {
+    id:"cook", label:"料理", emoji:"🍳", iconBg:"bg-green", tag:"t-green",
+    actions:[
+      { id:"cook-sand", label:"サンド", emoji:"🥪", sub:"かんたん調理" },
+      { id:"cook-salad",label:"サラダ", emoji:"🥗", sub:"混ぜる" },
+      { id:"cook-onigiri",label:"おにぎり", emoji:"🍙", sub:"握る" },
+      { id:"cook-soup", label:"スープ", emoji:"🍲", sub:"手順" },
+      { id:"cook-egg",  label:"たまご", emoji:"🍳", sub:"加熱" },
+      { id:"cook-fruit",label:"フルーツ", emoji:"🍎", sub:"切る" },
+    ]
+  },
+  {
+    id:"snack", label:"おやつ作り", emoji:"🍪", iconBg:"bg-brown", tag:"t-brown",
+    actions:[
+      { id:"snack-cookie", label:"クッキー", emoji:"🍪", sub:"こねる" },
+      { id:"snack-jelly",  label:"ゼリー", emoji:"🍮", sub:"冷やす" },
+      { id:"snack-parfait",label:"パフェ", emoji:"🍨", sub:"盛り付け" },
+      { id:"snack-pancake",label:"ホットケーキ", emoji:"🥞", sub:"焼く" },
+      { id:"snack-choco",  label:"チョコ", emoji:"🍫", sub:"固める" },
+      { id:"snack-popcorn",label:"ポップコーン", emoji:"🍿", sub:"楽しい" },
+    ]
+  },
+  {
+    id:"rule", label:"ルールゲーム", emoji:"🎲", iconBg:"bg-blue", tag:"t-blue",
+    actions:[
+      { id:"rule-uno",   label:"カードゲーム", emoji:"🃏", sub:"順番" },
+      { id:"rule-board", label:"ボードゲーム", emoji:"🎲", sub:"ルール" },
+      { id:"rule-karuta",label:"かるた", emoji:"🀄️", sub:"聞く" },
+      { id:"rule-jenga", label:"バランス", emoji:"🧱", sub:"手先" },
+      { id:"rule-shiritori",label:"しりとり", emoji:"🗣️", sub:"言葉" },
+      { id:"rule-team",  label:"チーム戦", emoji:"🤝", sub:"協力" },
+    ]
+  },
+  {
+    id:"life", label:"生活学習", emoji:"🏠", iconBg:"bg-lime", tag:"t-lime",
+    actions:[
+      { id:"life-clean",  label:"掃除", emoji:"🧹", sub:"片付け" },
+      { id:"life-laundry",label:"洗濯", emoji:"👕", sub:"たたむ" },
+      { id:"life-money",  label:"お金", emoji:"💴", sub:"買い物練習" },
+      { id:"life-traffic",label:"交通", emoji:"🚦", sub:"安全" },
+      { id:"life-manner", label:"マナー", emoji:"🙇", sub:"社会性" },
+      { id:"life-time",   label:"時間", emoji:"⏰", sub:"予定" },
+    ]
+  },
+  {
+    id:"out", label:"外出", emoji:"🚌", iconBg:"bg-gray", tag:"t-gray",
+    actions:[
+      { id:"out-park",   label:"公園", emoji:"🛝", sub:"遊具" },
+      { id:"out-walk",   label:"散策", emoji:"🌿", sub:"自然" },
+      { id:"out-library",label:"図書館", emoji:"📚", sub:"静かに" },
+      { id:"out-shop",   label:"買い物", emoji:"🛒", sub:"実践" },
+      { id:"out-museum", label:"見学", emoji:"🏛️", sub:"学び" },
+      { id:"out-train",  label:"乗り物", emoji:"🚃", sub:"体験" },
+    ]
+  },
 ];
 
-const activityById = Object.fromEntries(ACTIVITIES.map(a => [a.id, a]));
+const genreById = Object.fromEntries(GENRES.map(g => [g.id, g]));
 
 /* ===== 状態 ===== */
-let current = null;                 // 選択中のactivity id
+let current = null;          // 選択中：{ genreId, actionId }
 let viewY = 2025;
-let viewM = 12;                     // 1-12
+let viewM = 12;
 let lastPicked = "なし";
 
 /* ===== 保存キー ===== */
 function keyOf(y,m){ return `kanakia_${y}-${String(m).padStart(2,"0")}`; }
 
-/* ===== 月セレクト作成 ===== */
+/* ===== 月セレクト ===== */
 function buildMonthSelect(){
   const sel = document.getElementById("monthSelect");
   sel.innerHTML = "";
-  // 前後12ヶ月くらい出す
   const base = new Date();
   const start = new Date(base.getFullYear(), base.getMonth()-12, 1);
   for(let i=0;i<36;i++){
@@ -372,89 +559,76 @@ function buildMonthSelect(){
   });
 }
 
-/* ===== 活動グリッド ===== */
-function renderActivities(){
-  const grid = document.getElementById("actionGrid");
+/* ===== 9ジャンル描画 ===== */
+function renderGenres(){
+  const grid = document.getElementById("genreGrid");
   grid.innerHTML = "";
-  ACTIVITIES.forEach(a=>{
+  GENRES.forEach(g=>{
     const item = document.createElement("div");
-    item.className = "action-item";
-    item.dataset.id = a.id;
-
+    item.className = "genre-item";
     item.innerHTML = `
-      <div class="action-icon ${a.iconBg}">${a.emoji}</div>
-      <div class="action-label">${a.label}</div>
+      <div class="genre-icon ${g.iconBg}">${g.emoji}</div>
+      <div class="genre-label">${g.label}</div>
     `;
-
-    item.addEventListener("click", ()=>{
-      current = a.id;
-      document.querySelectorAll(".action-item").forEach(x=>x.classList.remove("active"));
-      item.classList.add("active");
-      updateStatus();
-    });
-
+    item.addEventListener("click", ()=>openModal(g.id));
     grid.appendChild(item);
   });
 }
 
-/* ===== カレンダー描画 ===== */
-function renderCalendar(){
-  const title = document.getElementById("calTitle");
-  title.textContent = `${viewY}年${viewM}月`;
-  document.getElementById("monthSelect").value = `${viewY}-${viewM}`;
+/* ===== モーダル ===== */
+const modal = document.getElementById("modal");
+const modalTitle = document.getElementById("modalTitle");
+const modalBadge = document.getElementById("modalBadge");
+const modalActions = document.getElementById("modalActions");
 
-  const daysEl = document.getElementById("days");
-  daysEl.innerHTML = "";
+function openModal(genreId){
+  const g = genreById[genreId];
+  if(!g) return;
 
-  const first = new Date(viewY, viewM-1, 1);
-  const last = new Date(viewY, viewM, 0);
-  const startDow = first.getDay(); // 0(日)-6(土)
-  const total = last.getDate();
+  modalTitle.textContent = `${g.label}｜活動を選ぶ`;
+  modalBadge.textContent = g.emoji;
+  modalBadge.className = `badge ${g.iconBg}`;
 
-  // 保存データを読む
-  const map = loadMonth(viewY, viewM); // { "2025-12-01": "sport", ... }
-
-  // 空白セル
-  for(let i=0;i<startDow;i++){
-    const empty = document.createElement("div");
-    empty.className = "day empty";
-    daysEl.appendChild(empty);
-  }
-
-  // 日付セル
-  for(let d=1; d<=total; d++){
-    const cell = document.createElement("div");
-    cell.className = "day";
-    const iso = `${viewY}-${String(viewM).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
-
-    cell.innerHTML = `<div class="dnum">${d}</div>`;
-
-    // 既に割当があれば表示
-    const actId = map[iso];
-    if(actId && activityById[actId]){
-      const a = activityById[actId];
-      const tag = document.createElement("div");
-      tag.className = `tag ${a.tag}`;
-      tag.innerHTML = `<span class="emo">${a.emoji}</span><span class="txt">${a.label}</span>`;
-      cell.appendChild(tag);
-    }
-
-    // クリックで反映（ここが復活部分）
-    cell.addEventListener("click", ()=>{
-      if(!current){
-        alert("先に活動を選んでください");
-        return;
-      }
-      map[iso] = current;
-      saveMonth(viewY, viewM, map);
-      lastPicked = `${viewM}/${d}`;
-      renderCalendar(); // 再描画で反映
+  modalActions.innerHTML = "";
+  g.actions.forEach(a=>{
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "act-btn";
+    btn.innerHTML = `
+      <div class="act-emo ${g.iconBg}">${a.emoji}</div>
+      <div>
+        <div class="act-name">${a.label}</div>
+        <div class="act-sub">${a.sub || ""}</div>
+      </div>
+    `;
+    btn.addEventListener("click", ()=>{
+      // 選択中をセット（＝ここで「カレンダーに反映する準備」）
+      current = { genreId: g.id, actionId: a.id };
       updateStatus();
+      closeModal();
+      // すぐカレンダーへ誘導したい場合は、ここでスクロールしてもOK
+      // document.getElementById("calTitle").scrollIntoView({behavior:"smooth"});
     });
+    modalActions.appendChild(btn);
+  });
 
-    daysEl.appendChild(cell);
-  }
+  modal.classList.add("show");
 }
+
+function closeModal(){
+  modal.classList.remove("show");
+}
+
+document.getElementById("modalX").addEventListener("click", closeModal);
+document.getElementById("modalBack").addEventListener("click", closeModal);
+// 背景クリックで閉じる
+modal.addEventListener("click", (e)=>{
+  if(e.target === modal) closeModal();
+});
+// ESCで閉じる
+document.addEventListener("keydown", (e)=>{
+  if(e.key === "Escape") closeModal();
+});
 
 /* ===== 状態表示 ===== */
 function updateStatus(){
@@ -462,13 +636,14 @@ function updateStatus(){
   if(!current){
     pill.textContent = "なし";
   }else{
-    const a = activityById[current];
+    const g = genreById[current.genreId];
+    const a = g.actions.find(x=>x.id===current.actionId);
     pill.textContent = `${a.emoji} ${a.label}`;
   }
   document.getElementById("lastDate").textContent = lastPicked;
 }
 
-/* ===== ローカル保存 ===== */
+/* ===== 保存データ（ISO -> {genreId, actionId}） ===== */
 function loadMonth(y,m){
   try{
     const raw = localStorage.getItem(keyOf(y,m));
@@ -481,20 +656,76 @@ function saveMonth(y,m,map){
   localStorage.setItem(keyOf(y,m), JSON.stringify(map));
 }
 
-/* 全消去 */
+/* ===== カレンダー描画 ===== */
+function renderCalendar(){
+  document.getElementById("calTitle").textContent = `${viewY}年${viewM}月`;
+  document.getElementById("monthSelect").value = `${viewY}-${viewM}`;
+
+  const daysEl = document.getElementById("days");
+  daysEl.innerHTML = "";
+
+  const first = new Date(viewY, viewM-1, 1);
+  const last = new Date(viewY, viewM, 0);
+  const startDow = first.getDay();
+  const total = last.getDate();
+
+  const map = loadMonth(viewY, viewM);
+
+  for(let i=0;i<startDow;i++){
+    const empty = document.createElement("div");
+    empty.className = "day empty";
+    daysEl.appendChild(empty);
+  }
+
+  for(let d=1; d<=total; d++){
+    const cell = document.createElement("div");
+    cell.className = "day";
+    const iso = `${viewY}-${String(viewM).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+    cell.innerHTML = `<div class="dnum">${d}</div>`;
+
+    // 既存表示
+    const saved = map[iso];
+    if(saved && saved.genreId && saved.actionId && genreById[saved.genreId]){
+      const g = genreById[saved.genreId];
+      const a = g.actions.find(x=>x.id===saved.actionId);
+      if(a){
+        const tag = document.createElement("div");
+        tag.className = `tag ${g.tag}`;
+        tag.innerHTML = `<span class="emo">${a.emoji}</span><span class="txt">${a.label}</span>`;
+        cell.appendChild(tag);
+      }
+    }
+
+    // 日付タップで反映
+    cell.addEventListener("click", ()=>{
+      if(!current){
+        alert("先にジャンルを押して、活動を選んでください");
+        return;
+      }
+      map[iso] = { genreId: current.genreId, actionId: current.actionId };
+      saveMonth(viewY, viewM, map);
+      lastPicked = `${viewM}/${d}`;
+      renderCalendar();
+      updateStatus();
+    });
+
+    daysEl.appendChild(cell);
+  }
+}
+
+/* ===== 全消去 ===== */
 function clearMonth(){
   if(!confirm("この月の入力を全て消します。よろしいですか？")) return;
   localStorage.removeItem(keyOf(viewY, viewM));
   renderCalendar();
 }
 
-/* 保存 → saved.htmlへ（既存フローに合わせる） */
+/* ===== 保存 → saved.htmlへ ===== */
 function goSaved(){
-  // ※ここはあなたの既存 saved.html へ遷移する仕様に合わせてある
   location.href = `saved.html?y=${viewY}&m=${viewM}`;
 }
 
-/* 月移動 */
+/* ===== 月移動 ===== */
 function shiftMonth(delta){
   const d = new Date(viewY, viewM-1 + delta, 1);
   viewY = d.getFullYear();
@@ -504,7 +735,7 @@ function shiftMonth(delta){
 
 /* ===== 初期化 ===== */
 buildMonthSelect();
-renderActivities();
+renderGenres();
 renderCalendar();
 updateStatus();
 
