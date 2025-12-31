@@ -2,491 +2,526 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>配布確認 | カナリア通信</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>カナリア通信 | 活動カレンダー</title>
+
   <style>
     :root{
       --bg:#f5f6f8;
       --card:#fff;
-      --text:#1f2328;
-      --muted:#6b7280;
-      --line:#e5e7eb;
-      --brand:#4fc3c7;
-      --shadow: 0 10px 30px rgba(0,0,0,.08);
+      --line:#e7e9ee;
+      --text:#111;
+      --muted:#7a8190;
+      --primary:#23a455;
+      --primary2:#1f8f4a;
+      --shadow:0 10px 30px rgba(16,24,40,.08);
       --radius:18px;
     }
     *{box-sizing:border-box}
     body{
       margin:0;
-      font-family: -apple-system, BlinkMacSystemFont, "Noto Sans JP", "Hiragino Sans", "Helvetica Neue", Arial, sans-serif;
+      font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP","Hiragino Sans","Helvetica Neue",Arial,sans-serif;
       background:var(--bg);
       color:var(--text);
     }
 
-    /* 上部バー */
     .topbar{
-      position:sticky; top:0; z-index:50;
-      background:linear-gradient(180deg, rgba(79,195,199,.22), rgba(79,195,199,0));
-      padding:12px 12px 8px;
-      backdrop-filter: blur(6px);
+      background:#4fc3c7;
+      color:#fff;
+      text-align:center;
+      padding:18px 14px;
+      font-weight:800;
+      letter-spacing:.02em;
+      font-size:20px;
+      position:sticky;
+      top:0;
+      z-index:20;
     }
-    .topbar-inner{
-      max-width:920px;
+
+    .wrap{
+      max-width:980px;
       margin:0 auto;
+      padding:14px 14px 40px;
+    }
+
+    .panel{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:22px;
+      box-shadow:var(--shadow);
+      padding:16px;
+      margin:12px 0;
+    }
+
+    .section-title{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:900;
+      margin:4px 0 10px;
+      font-size:18px;
+    }
+    .section-title small{
+      font-weight:600;
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    /* ---- 9アイコン ---- */
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:14px;
+    }
+    .item{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:14px 10px 12px;
+      text-align:center;
+      box-shadow:0 10px 24px rgba(0,0,0,.06);
+      cursor:pointer;
+      user-select:none;
+      transition:transform .08s ease, box-shadow .12s ease;
+    }
+    .item:active{ transform:scale(.98); }
+    .item.selected{
+      outline:3px solid rgba(35,164,85,.25);
+      border-color:rgba(35,164,85,.35);
+    }
+
+    /* ここで「少し小さく」してます */
+    .circle{
+      width:88px; height:88px;          /* ← ちょい小さめ */
+      border-radius:50%;
+      margin:4px auto 10px;
+      display:grid;
+      place-items:center;
+      font-size:40px;
+    }
+    .label{
+      font-weight:900;
+      font-size:18px;
+      line-height:1.1;
+      margin-top:2px;
+    }
+
+    /* ---- ステータス ---- */
+    .status{
+      margin-top:10px;
+      padding-top:10px;
+      border-top:1px dashed #e5e7ee;
+      color:#333;
+      display:grid;
+      gap:6px;
+    }
+    .status b{
+      display:inline-block;
+      margin-left:8px;
+      padding:3px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      font-weight:900;
+    }
+
+    /* ---- ジャンルとカレンダーの間のボタン ---- */
+    .between-actions{
+      display:flex;
+      justify-content:center;
+      margin:12px 0 14px;
+    }
+
+    .btn{
+      border:none;
+      border-radius:999px;
+      padding:12px 18px;
+      font-weight:900;
+      cursor:pointer;
+      font-size:15px;
+      box-shadow:0 12px 26px rgba(0,0,0,.10);
+    }
+    .btn.primary{
+      background:linear-gradient(180deg,var(--primary),var(--primary2));
+      color:#fff;
+      min-width:220px;
+    }
+    .btn.ghost{
+      background:#fff;
+      border:1px solid var(--line);
+      color:#222;
+      box-shadow:none;
+    }
+
+    /* ---- カレンダー ---- */
+    .cal-head{
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
+      margin-bottom:10px;
     }
-    .brand{
-      display:flex; align-items:center; gap:10px;
-      font-weight:800;
-    }
-    .badge{
-      width:36px; height:36px; border-radius:12px;
-      display:grid; place-items:center;
-      background:#fff;
-      box-shadow: var(--shadow);
-      border:1px solid var(--line);
-      font-size:20px;
-    }
-    .brand small{display:block; font-weight:600; color:var(--muted); margin-top:2px}
-
-    .btns{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end}
-    .btn{
-      appearance:none; border:1px solid var(--line);
-      background:#fff;
-      padding:10px 12px;
-      border-radius:12px;
-      font-weight:700;
-      cursor:pointer;
-      box-shadow: 0 6px 18px rgba(0,0,0,.06);
-    }
-    .btn.primary{
-      background: linear-gradient(135deg, #2fbf71, #1ea85b);
-      color:#fff;
-      border:none;
-    }
-    .btn.ghost{
-      background:#fff;
-    }
-
-    /* ペーパー（配布用の1ページ） */
-    .wrap{
-      max-width:920px;
-      margin:10px auto 80px;
-      padding:0 12px;
-    }
-    .paper{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius: 22px;
-      box-shadow: var(--shadow);
-      overflow:hidden;
-    }
-    .paper-head{
-      position:relative;
-      padding:18px 18px 14px;
-      background: linear-gradient(180deg, rgba(79,195,199,.28), rgba(79,195,199,.06));
-      border-bottom:1px solid var(--line);
-    }
-    .paper-title{
-      display:flex; align-items:flex-end; gap:10px;
-      flex-wrap:wrap;
-    }
-    .paper-title h1{
-      font-size:28px;
-      letter-spacing:.02em;
-      margin:0;
-    }
-    .paper-title .month{
-      font-size:22px;
+    .ym{
       font-weight:900;
+      font-size:26px;
+      letter-spacing:.02em;
     }
-    .paper-sub{
-      margin-top:10px;
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:10px 12px;
-      color:#0f766e;
-      font-weight:700;
+    .nav{
       display:flex;
-      align-items:center;
-      gap:8px;
-    }
-    .paper-sub span{
-      display:inline-grid; place-items:center;
-      width:28px; height:28px; border-radius:10px;
-      background:rgba(79,195,199,.18);
-      color:#0f766e;
-      font-size:16px;
-      border:1px solid rgba(79,195,199,.25);
-    }
-
-    /* カレンダー */
-    .cal{
-      padding:16px;
-    }
-    .cal-grid{
-      display:grid;
-      grid-template-columns: repeat(7, 1fr);
       gap:10px;
     }
-    .dow{
+    .nav button{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:14px;
+      padding:10px 12px;
       font-weight:900;
-      color:var(--muted);
-      text-align:center;
-      font-size:13px;
-      padding:6px 0;
+      cursor:pointer;
+      min-width:88px;
     }
-    .dow.sun{color:#ef4444}
-    .dow.sat{color:#3b82f6}
 
+    .dow{
+      display:grid;
+      grid-template-columns:repeat(7,1fr);
+      gap:10px;
+      margin:8px 0 8px;
+      padding:0 4px;
+      font-weight:900;
+      color:#6b7280;
+    }
+    .dow div{ text-align:center; }
+    .dow .sun{ color:#e11d48;}
+    .dow .sat{ color:#2563eb;}
+
+    .cal{
+      display:grid;
+      grid-template-columns:repeat(7,1fr);
+      gap:10px;
+    }
     .cell{
-      min-height:92px;
+      background:#fff;
       border:1px solid var(--line);
       border-radius:16px;
+      min-height:84px;
       padding:10px 10px 8px;
-      background:#fff;
-      display:flex;
-      flex-direction:column;
-      gap:8px;
+      position:relative;
+      cursor:pointer;
+      overflow:hidden;
     }
-    .cell.muted{
-      opacity:.35;
+    .cell.disabled{
+      opacity:.45;
+      cursor:default;
       background:#fafafa;
     }
     .date{
       font-weight:900;
-      font-size:14px;
-      color:#111827;
+      font-size:20px;
+      color:#111;
     }
-
-    .pill{
-      margin-top:auto;
+    .badge{
+      position:absolute;
+      left:10px;
+      right:10px;
+      bottom:10px;
       border-radius:999px;
-      padding:10px 12px;
-      border:1px solid rgba(0,0,0,.06);
-      display:flex;
-      align-items:center;
-      gap:10px;
+      padding:8px 10px;
       font-weight:900;
-      line-height:1.1;
-      min-height:46px;
-      box-shadow: 0 8px 18px rgba(0,0,0,.08);
-    }
-    .pill .emoji{
-      width:30px; height:30px;
-      display:grid; place-items:center;
-      border-radius:999px;
-      background: rgba(255,255,255,.6);
-      border:1px solid rgba(255,255,255,.55);
-      font-size:18px;
-    }
-    .pill .label{
-      flex:1;
-      font-size:14px;
-      word-break: keep-all;
-    }
-
-    .legend{
-      border-top:1px dashed var(--line);
-      padding:14px 16px;
       display:flex;
-      flex-wrap:wrap;
-      gap:8px 10px;
+      gap:8px;
       align-items:center;
-      color:var(--muted);
-      font-weight:700;
-      font-size:13px;
+      justify-content:center;
+      border:1px solid rgba(0,0,0,.06);
+      box-shadow:0 10px 18px rgba(0,0,0,.08);
     }
-    .legend .dot{
-      display:inline-flex; align-items:center; gap:6px;
-      padding:6px 10px;
-      border:1px solid var(--line);
-      border-radius:999px;
-      background:#fff;
-    }
-    .legend .sw{
-      width:12px; height:12px; border-radius:999px;
-      border:1px solid rgba(0,0,0,.08);
-      display:inline-block;
-    }
+    .badge .e{ font-size:18px; }
 
-    /* 共有の小メッセージ */
-    .toast{
-      position:fixed;
-      left:50%;
-      transform:translateX(-50%);
-      bottom:18px;
-      background:#111827;
-      color:#fff;
-      padding:10px 12px;
-      border-radius:12px;
-      font-weight:800;
-      box-shadow: 0 10px 30px rgba(0,0,0,.25);
-      opacity:0;
-      pointer-events:none;
-      transition:.2s;
-      max-width: calc(100vw - 24px);
+    .hint{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:13px;
       text-align:center;
     }
-    .toast.show{opacity:1}
 
-    /* 印刷（PDF化）用 */
-    @media print{
-      body{background:#fff}
-      .topbar{display:none}
-      .wrap{margin:0; padding:0}
-      .paper{
-        box-shadow:none;
-        border:none;
-        border-radius:0;
-      }
-      /* A4に近い余白 */
-      @page { size: A4; margin: 10mm; }
+    @media (max-width:420px){
+      .circle{ width:82px; height:82px; font-size:38px; }
+      .label{ font-size:17px; }
+      .cell{ min-height:78px; }
+      .ym{ font-size:24px; }
     }
   </style>
-  <div class="between-actions">
-  <button id="previewBtn" class="previewBtn">配布確認へ</button>
-</div>
 </head>
+
 <body>
-  <div class="topbar">
-    <div class="topbar-inner">
-      <div class="brand">
-        <div class="badge">🐤</div>
-        <div>
-          <div>カナリア通信 <span style="font-weight:900;">（配布確認）</span></div>
-          <small id="subInfo">URL共有 / PDF出力できます</small>
-        </div>
-      </div>
-      <div class="btns">
-        <button class="btn ghost" id="backBtn">← 戻る</button>
-        <button class="btn primary" id="pdfBtn">PDFにする</button>
-        <button class="btn" id="shareBtn">共有</button>
-      </div>
-    </div>
-  </div>
+  <div class="topbar">カナリア通信 | 活動カレンダー</div>
 
   <div class="wrap">
-    <div class="paper" id="paper">
-      <div class="paper-head">
-        <div class="paper-title">
-          <h1>カナリア通信</h1>
-          <div class="month" id="monthLabel">2025年12月</div>
-        </div>
-        <div class="paper-sub">
-          <span>📣</span>
-          <div>カレンダーを作成しました！ご家庭での確認・掲示・共有にご利用ください。</div>
-        </div>
-      </div>
 
-      <div class="cal">
-        <div class="cal-grid" id="dowRow">
-          <div class="dow sun">日</div><div class="dow">月</div><div class="dow">火</div><div class="dow">水</div><div class="dow">木</div><div class="dow">金</div><div class="dow sat">土</div>
-        </div>
-        <div class="cal-grid" id="grid"></div>
-      </div>
+    <div class="panel" id="genrePanel">
+      <div class="section-title">① 活動を選ぶ <small>（アイコンをタップ → 次に日付をタップ）</small></div>
 
-      <div class="legend" id="legend"></div>
+      <div class="grid" id="genreGrid"></div>
+
+      <div class="status">
+        <div>選択中の活動：<b id="currentAct">なし</b></div>
+        <div>直近で選んだ日付：<b id="lastDate">なし</b></div>
+      </div>
     </div>
+
+    <!-- ★ここが「ジャンルとカレンダーの間」 -->
+    <div class="between-actions">
+      <button id="previewBtn" class="btn primary">確認する</button>
+    </div>
+
+    <div class="panel">
+      <div class="section-title">② 日付を選ぶ <small>（タップで反映 / 同じ日をタップで上書き）</small></div>
+
+      <div class="cal-head">
+        <div class="ym" id="ym"></div>
+        <div class="nav">
+          <button id="prevBtn">◀ 前月</button>
+          <button id="nextBtn">次月 ▶</button>
+        </div>
+      </div>
+
+      <div class="dow">
+        <div class="sun">日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div class="sat">土</div>
+      </div>
+
+      <div class="cal" id="cal"></div>
+
+      <div class="hint">※ 先に活動を選んでから日付をタップしてください。</div>
+    </div>
+
   </div>
 
-  <div class="toast" id="toast">コピーしました</div>
-
   <script>
-    // ===== 活動マスタ（必要なら好きに追加OK） =====
-    // id: カレンダー側の値 / label: 表示 / emoji: アイコン / color: 配布用の色
-    const ACTIVITIES = [
-      { id:"sport", label:"運動", emoji:"🏃", color:"#93c5fd" },
-      { id:"task", label:"指先課題", emoji:"✋", color:"#a78bfa" },
-      { id:"focus", label:"集中課題", emoji:"🧠", color:"#5eead4" },
-      { id:"craft", label:"工作", emoji:"🎨", color:"#fbbf24" },
-      { id:"cook", label:"料理", emoji:"🍳", color:"#86efac" },
-      { id:"snack", label:"おやつ作り", emoji:"🍪", color:"#fdba74" },
-      { id:"rule", label:"ルールゲーム", emoji:"🎲", color:"#c4b5fd" },
-      { id:"life", label:"生活学習", emoji:"🏠", color:"#a3e635" },
-      { id:"out", label:"外出", emoji:"🚌", color:"#94a3b8" },
-      { id:"off", label:"お休み", emoji:"😶", color:"#e5e7eb" },
-      // 例：2ページ目で使ってたやつ
-      { id:"karaoke", label:"カラオケ", emoji:"🎤", color:"#fda4af" },
-      { id:"planet", label:"プラネタリウム", emoji:"🌙", color:"#7dd3fc" },
-      { id:"study", label:"学習", emoji:"📚", color:"#86efac" },
-      { id:"program", label:"プログラミング", emoji:"🤖", color:"#d1d5db" },
+    // ===== 9ジャンル（トップと揃える用） =====
+    const GENRES = [
+      { id:'sport',  label:'運動',     emoji:'🏃', color:'#ff8a65' },
+      { id:'focus',  label:'指先課題', emoji:'🖐️', color:'#8e7cc3' },
+      { id:'brain',  label:'集中課題', emoji:'🧠', color:'#4db6ac' },
+      { id:'craft',  label:'工作',     emoji:'🎨', color:'#f4c542' },
+      { id:'cook',   label:'料理',     emoji:'🍳', color:'#66bb6a' },
+      { id:'snack',  label:'おやつ作り', emoji:'🍪', color:'#ffb74d' },
+      { id:'rule',   label:'ルールゲーム', emoji:'🎲', color:'#64b5f6' },
+      { id:'life',   label:'生活学習', emoji:'🏠', color:'#aed581' },
+      { id:'outing', label:'外出',     emoji:'🚌', color:'#90a4ae' },
     ];
-    const ACT_MAP = new Map(ACTIVITIES.map(a => [a.id, a]));
 
-    // ===== クエリ =====
-    const params = new URLSearchParams(location.search);
-    const y = Number(params.get("y")) || new Date().getFullYear();
-    const m = Number(params.get("m")) || (new Date().getMonth() + 1);
+    // ===== 状態 =====
+    let y, m; // y:2025, m:12 (1-12)
+    let selectedGenreId = null;
 
-    document.getElementById("monthLabel").textContent = `${y}年${m}月`;
+    // その月の割当: day -> {genreId,label,emoji,color}
+    let assignments = {};
 
-    // ===== データ取得（localStorage or URLハッシュ） =====
-    // 保存キー（この方式に統一）
-    const key = `kanakia_month_${y}-${String(m).padStart(2,"0")}`;
-    let monthData = null;
+    const $grid = document.getElementById('genreGrid');
+    const $cal  = document.getElementById('cal');
+    const $ym   = document.getElementById('ym');
+    const $currentAct = document.getElementById('currentAct');
+    const $lastDate   = document.getElementById('lastDate');
 
-    // 1) localStorage
-    try{
-      const raw = localStorage.getItem(key);
-      if(raw) monthData = JSON.parse(raw);
-    }catch(e){}
+    function pad2(n){ return String(n).padStart(2,'0'); }
 
-    // 2) URLハッシュ (#data=...)
-    if(!monthData){
-      const hash = location.hash || "";
-      const match = hash.match(/data=([^&]+)/);
-      if(match){
-        try{
-          const json = decodeURIComponent(escape(atob(match[1].replace(/-/g,'+').replace(/_/g,'/'))));
-          monthData = JSON.parse(json);
-        }catch(e){}
-      }
+    function storageKey(year, month){
+      return `kanaria:month:${year}-${pad2(month)}`;
     }
 
-    // monthData 形式:
-    // { y:2025, m:12, assigns: { "2025-12-04": "sport", "2025-12-08":"planet" ... } }
-    if(!monthData || !monthData.assigns){
-      monthData = { y, m, assigns:{} };
-      document.getElementById("subInfo").textContent = "データが見つかりません（カレンダー画面で保存→確認へ）";
+    function loadMonth(year, month){
+      const raw = localStorage.getItem(storageKey(year, month));
+      assignments = raw ? JSON.parse(raw) : {};
     }
 
-    // ===== カレンダー描画 =====
-    function pad2(n){ return String(n).padStart(2,"0"); }
-    function isoDate(y,m,d){ return `${y}-${pad2(m)}-${pad2(d)}`; }
-
-    function buildCalendar(){
-      const grid = document.getElementById("grid");
-      grid.innerHTML = "";
-
-      const first = new Date(y, m-1, 1);
-      const last  = new Date(y, m, 0);
-      const startDow = first.getDay(); // 0..6
-      const daysInMonth = last.getDate();
-
-      // 前月の埋め
-      const prevLast = new Date(y, m-1, 0).getDate();
-      for(let i=0;i<startDow;i++){
-        const d = prevLast - (startDow-1-i);
-        const cell = document.createElement("div");
-        cell.className = "cell muted";
-        cell.innerHTML = `<div class="date">${d}</div>`;
-        grid.appendChild(cell);
-      }
-
-      // 当月
-      for(let d=1; d<=daysInMonth; d++){
-        const dateKey = isoDate(y,m,d);
-        const actId = monthData.assigns[dateKey];
-        const act = actId ? ACT_MAP.get(actId) : null;
-
-        const cell = document.createElement("div");
-        cell.className = "cell";
-        const pill = act ? `
-          <div class="pill" style="background:${act.color}">
-            <div class="emoji">${act.emoji || "✨"}</div>
-            <div class="label">${act.label}</div>
-          </div>
-        ` : "";
-
-        cell.innerHTML = `<div class="date">${d}</div>${pill}`;
-        grid.appendChild(cell);
-      }
-
-      // 次月の埋め（6行固定に近づける）
-      const totalCellsSoFar = startDow + daysInMonth;
-      const need = (totalCellsSoFar <= 35) ? (35 - totalCellsSoFar) : (42 - totalCellsSoFar);
-      for(let i=1;i<=need;i++){
-        const cell = document.createElement("div");
-        cell.className = "cell muted";
-        cell.innerHTML = `<div class="date">${i}</div>`;
-        grid.appendChild(cell);
-      }
+    function saveMonth(year, month){
+      localStorage.setItem(storageKey(year, month), JSON.stringify(assignments));
     }
 
-    // ===== 凡例 =====
-    function buildLegend(){
-      const legend = document.getElementById("legend");
-      legend.innerHTML = "";
-
-      // 使っているアクションだけ抽出
-      const used = new Set(Object.values(monthData.assigns || {}).filter(Boolean));
-      if(used.size === 0){
-        legend.textContent = "※ まだ予定が入っていません。";
-        return;
-      }
-
-      for(const id of used){
-        const act = ACT_MAP.get(id);
-        if(!act) continue;
-        const el = document.createElement("div");
-        el.className = "dot";
-        el.innerHTML = `<span class="sw" style="background:${act.color}"></span> ${act.emoji} ${act.label}`;
-        legend.appendChild(el);
-      }
-    }
-
-    buildCalendar();
-    buildLegend();
-
-    // ===== ボタン動作 =====
-    const toast = (msg)=>{
-      const t = document.getElementById("toast");
-      t.textContent = msg;
-      t.classList.add("show");
-      setTimeout(()=>t.classList.remove("show"), 1400);
-    };
-
-    // 戻る（action.htmlに戻す）
-    document.getElementById("backBtn").addEventListener("click", ()=>{
-      // action.html 側が y,m を受け取れる想定
-      location.href = `action.html?y=${y}&m=${m}`;
-    });
-
-    // PDF（=印刷）
-    document.getElementById("pdfBtn").addEventListener("click", ()=>{
-      window.print();
-    });
-
-    // 共有
-    document.getElementById("shareBtn").addEventListener("click", async ()=>{
-      // 共有URL：localStorage依存だと相手の端末で見えないので、
-      // URLにデータを詰めたリンクを生成して渡す（ハッシュに入れる）
-      const payload = {
-        y, m,
-        assigns: monthData.assigns || {}
+    function getQueryYM(){
+      const qs = new URLSearchParams(location.search);
+      const qy = parseInt(qs.get('y') || '', 10);
+      const qm = parseInt(qs.get('m') || '', 10);
+      const now = new Date();
+      return {
+        y: Number.isFinite(qy) ? qy : now.getFullYear(),
+        m: Number.isFinite(qm) ? qm : (now.getMonth()+1)
       };
-      const json = JSON.stringify(payload);
-      const b64 = btoa(unescape(encodeURIComponent(json)))
-        .replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
-      const shareUrl = `${location.origin}${location.pathname}?y=${y}&m=${m}#data=${b64}`;
+    }
 
-      // Web Share API（iPhone/AndroidでLINEやメールが出る）
-      if(navigator.share){
-        try{
-          await navigator.share({
-            title: `カナリア通信 ${y}年${m}月`,
-            text: `カナリア通信（${y}年${m}月）です。`,
-            url: shareUrl
-          });
-          return;
-        }catch(e){
-          // キャンセル等は何もしない
-        }
+    // ===== UI: ジャンル9つ =====
+    function renderGenres(){
+      $grid.innerHTML = '';
+      GENRES.forEach(g=>{
+        const el = document.createElement('div');
+        el.className = 'item';
+        el.dataset.id = g.id;
+        el.innerHTML = `
+          <div class="circle" style="background:${g.color}">${g.emoji}</div>
+          <div class="label">${g.label}</div>
+        `;
+        el.addEventListener('click', ()=>{
+          selectedGenreId = g.id;
+          document.querySelectorAll('.item').forEach(x=>x.classList.remove('selected'));
+          el.classList.add('selected');
+          $currentAct.textContent = g.label;
+        });
+        $grid.appendChild(el);
+      });
+    }
+
+    // ===== UI: カレンダー =====
+    function daysInMonth(year, month){
+      return new Date(year, month, 0).getDate(); // month:1-12
+    }
+    function firstDow(year, month){
+      return new Date(year, month-1, 1).getDay(); // 0=Sun
+    }
+
+    function renderCalendar(){
+      $ym.textContent = `${y}年${m}月`;
+      $cal.innerHTML = '';
+
+      const first = firstDow(y,m);
+      const dim = daysInMonth(y,m);
+
+      // 先頭の空白
+      for(let i=0;i<first;i++){
+        const blank = document.createElement('div');
+        blank.className = 'cell disabled';
+        blank.innerHTML = `<div class="date">&nbsp;</div>`;
+        $cal.appendChild(blank);
       }
 
-      // フォールバック：コピー
-      try{
-        await navigator.clipboard.writeText(shareUrl);
-        toast("共有URLをコピーしました");
-      }catch(e){
-        prompt("このURLをコピーして共有してください", shareUrl);
+      for(let d=1; d<=dim; d++){
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.dataset.day = String(d);
+
+        const a = assignments[d] || null;
+
+        cell.innerHTML = `
+          <div class="date">${d}</div>
+          ${a ? `<div class="badge" style="background:${hexToRgba(a.color,0.28)}">
+                  <span class="e">${a.emoji}</span>
+                  <span>${escapeHtml(a.label)}</span>
+                </div>` : ``}
+        `;
+
+        cell.addEventListener('click', ()=>{
+          if(!selectedGenreId){
+            toast('先に活動を選んでください');
+            return;
+          }
+          const g = GENRES.find(x=>x.id===selectedGenreId);
+          assignments[d] = { genreId:g.id, label:g.label, emoji:g.emoji, color:g.color };
+          saveMonth(y,m);
+          $lastDate.textContent = `${m}/${d}`;
+          renderCalendar();
+        });
+
+        $cal.appendChild(cell);
       }
+
+      // 末尾の空白で見た目を揃える（最大6週）
+      const totalCells = first + dim;
+      const rest = (7 - (totalCells % 7)) % 7;
+      for(let i=0;i<rest;i++){
+        const blank = document.createElement('div');
+        blank.className = 'cell disabled';
+        blank.innerHTML = `<div class="date">&nbsp;</div>`;
+        $cal.appendChild(blank);
+      }
+    }
+
+    // ===== 便利関数 =====
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'","&#039;");
+    }
+    function hexToRgba(hex, a){
+      // hex "#rrggbb"
+      const h = hex.replace('#','');
+      const r = parseInt(h.substring(0,2),16);
+      const g = parseInt(h.substring(2,4),16);
+      const b = parseInt(h.substring(4,6),16);
+      return `rgba(${r},${g},${b},${a})`;
+    }
+
+    // ===== トースト =====
+    let toastTimer = null;
+    function toast(msg){
+      let t = document.getElementById('toast');
+      if(!t){
+        t = document.createElement('div');
+        t.id = 'toast';
+        t.style.position='fixed';
+        t.style.left='50%';
+        t.style.bottom='18px';
+        t.style.transform='translateX(-50%)';
+        t.style.background='rgba(17,24,39,.92)';
+        t.style.color='#fff';
+        t.style.padding='10px 14px';
+        t.style.borderRadius='999px';
+        t.style.fontWeight='800';
+        t.style.fontSize='13px';
+        t.style.zIndex='9999';
+        t.style.opacity='0';
+        t.style.transition='.2s';
+        document.body.appendChild(t);
+      }
+      t.textContent = msg;
+      t.style.opacity='1';
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=>{ t.style.opacity='0'; }, 1300);
+    }
+
+    // ===== 共有用データ作成（URLに埋め込み） =====
+    function base64UrlEncode(str){
+      return btoa(unescape(encodeURIComponent(str)))
+        .replaceAll('+','-').replaceAll('/','_').replaceAll('=','');
+    }
+
+    function buildShareUrl(){
+      const data = { y, m, assignments };
+      const encoded = base64UrlEncode(JSON.stringify(data));
+      const url = new URL('preview.html', location.href);
+      url.searchParams.set('d', encoded);
+      return url.toString();
+    }
+
+    // ===== イベント =====
+    document.getElementById('prevBtn').addEventListener('click', ()=>{
+      m--;
+      if(m<=0){ m=12; y--; }
+      loadMonth(y,m);
+      renderCalendar();
     });
+    document.getElementById('nextBtn').addEventListener('click', ()=>{
+      m++;
+      if(m>=13){ m=1; y++; }
+      loadMonth(y,m);
+      renderCalendar();
+    });
+
+    // 「確認する」→ preview.htmlへ
+    document.getElementById('previewBtn').addEventListener('click', ()=>{
+      // 保存してから移動
+      saveMonth(y,m);
+      const url = buildShareUrl();
+      location.href = url;
+    });
+
+    // ===== 初期化 =====
+    (function init(){
+      const q = getQueryYM();
+      y = q.y; m = q.m;
+      renderGenres();
+      loadMonth(y,m);
+      renderCalendar();
+    })();
   </script>
 </body>
 </html>
