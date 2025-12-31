@@ -1,502 +1,233 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>カナリア通信｜活動カレンダー</title>
-  <style>
-    :root{
-      --bg:#f7f7fb;
-      --card:#ffffff;
-      --text:#1a1a1a;
-      --muted:#6b7280;
-      --line:#e5e7eb;
-      --accent:#16a34a;
-      --shadow: 0 8px 24px rgba(0,0,0,.08);
-      --radius: 16px;
-    }
-    *{ box-sizing:border-box; }
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", sans-serif;
-      background: linear-gradient(180deg, #fff, var(--bg));
-      color: var(--text);
-    }
-    .wrap{ max-width: 1100px; margin: 0 auto; padding: 18px 14px 40px; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>カナリア通信｜活動カレンダー</title>
 
-    /* Header */
-    header{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:12px; padding: 14px 12px;
-    }
-    .brand{
-      display:flex; align-items:center; gap:10px;
-    }
-    .logo{
-      width:42px; height:42px; border-radius: 14px;
-      background: radial-gradient(circle at 30% 30%, #ffe07a, #f7b500);
-      display:grid; place-items:center; box-shadow: var(--shadow);
-      font-size:22px;
-    }
-    h1{ font-size: 18px; margin:0; }
-    .sub{ font-size: 12px; color: var(--muted); margin-top:2px; }
-    .actions{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-    button, select{
-      border: 1px solid var(--line);
-      background: #fff;
-      padding: 10px 12px;
-      border-radius: 12px;
-      font-size: 14px;
-      cursor:pointer;
-    }
-    button.primary{
-      border-color: transparent;
-      background: var(--accent);
-      color:#fff;
-      font-weight:700;
-    }
-    button.ghost{ background:#fff; }
+<style>
+/* ===== 基本 ===== */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Noto Sans JP", sans-serif;
+  background: #f5f6f8;
+  color: #333;
+}
 
-    /* Layout */
-    .grid{
-      display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 14px;
-    }
-    @media (max-width: 900px){
-      .grid{ grid-template-columns: 1fr; }
-    }
+h3 {
+  margin: 24px 16px 12px;
+  font-size: 16px;
+}
 
-    .panel{
-      background: var(--card);
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 14px;
-    }
-    .panel h2{
-      margin: 0 0 8px;
-      font-size: 16px;
-    }
-    .hint{
-      margin: 0 0 10px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-    }
+/* ===== ヘッダー ===== */
+header {
+  background: #4fc3c7;
+  color: #fff;
+  text-align: center;
+  padding: 16px;
+  font-size: 20px;
+  font-weight: 700;
+}
 
-    /* Activity cards */
-    .chips{
-      display:flex; gap:8px; flex-wrap:wrap;
-      margin: 10px 0 6px;
-    }
-    .chip{
-      display:inline-flex; align-items:center; gap:8px;
-      padding: 10px 12px;
-      border-radius: 999px;
-      border:1px solid var(--line);
-      background:#fff;
-      cursor:pointer;
-      user-select:none;
-      font-size: 14px;
-    }
-    .chip[data-active="true"]{
-      outline: 3px solid rgba(22,163,74,.18);
-      border-color: rgba(22,163,74,.55);
-    }
-    .dot{
-      width:10px; height:10px; border-radius: 999px;
-      background: #999;
-    }
-    .chip .emoji{ font-size: 18px; }
+/* ===== 上部操作 ===== */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+}
 
-    .legend{
-      display:flex; gap:10px; flex-wrap:wrap;
-      padding-top: 8px;
-      border-top:1px dashed var(--line);
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-    .legend .item{ display:flex; gap:6px; align-items:center; }
+select {
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
 
-    /* Calendar */
-    .cal-head{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:8px; margin-bottom: 10px;
-    }
-    .month-title{ font-size: 16px; font-weight:800; }
-    .cal-tools{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.save-btn {
+  background: #2fb34a;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 700;
+}
 
-    .cal{
-      width:100%;
-      border-collapse: separate;
-      border-spacing: 6px;
-    }
-    .cal th{
-      font-size: 12px; color: var(--muted);
-      padding: 6px 0;
-      text-align:center;
-    }
-    .cell{
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius: 14px;
-      min-height: 78px;
-      padding: 8px;
-      vertical-align: top;
-      position:relative;
-      cursor:pointer;
-    }
-    .cell[data-out="true"]{
-      opacity:.35;
-      cursor: default;
-    }
-    .daynum{
-      font-weight:800;
-      font-size: 13px;
-    }
-    .badge{
-      margin-top: 8px;
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight:700;
-      border:1px solid rgba(0,0,0,.06);
-      background: rgba(0,0,0,.03);
-    }
-    .badge .emoji{ font-size: 15px; }
+/* ===== アクション選択（indexと共通デザイン） ===== */
+.action-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  padding: 0 16px 12px;
+}
 
-    .selected-date{
-      padding: 10px 12px;
-      border-radius: 14px;
-      border: 1px dashed var(--line);
-      background: #fbfbff;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-    }
+.action-item {
+  background: #fff;
+  border-radius: 20px;
+  padding: 18px 10px 16px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+  cursor: pointer;
+}
 
-    .toast{
-      margin-top: 10px;
-      background:#0b1220;
-      color:#fff;
-      border-radius: 14px;
-      padding: 10px 12px;
-      display:none;
-      font-size: 13px;
-    }
-    .toast.show{ display:block; }
-  </style>
+.action-item.active {
+  outline: 3px solid #4fc3c7;
+}
+
+.action-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  margin: 0 auto 8px;
+}
+
+.action-label {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* 色 */
+.bg-orange { background:#ff8a65; }
+.bg-purple { background:#9575cd; }
+.bg-teal   { background:#4db6ac; }
+.bg-yellow { background:#fbc02d; }
+.bg-green  { background:#81c784; }
+.bg-brown  { background:#ffb74d; }
+.bg-blue   { background:#64b5f6; }
+.bg-lime   { background:#aed581; }
+.bg-gray   { background:#90a4ae; }
+
+/* ===== カレンダー ===== */
+.calendar {
+  background: #fff;
+  margin: 16px;
+  border-radius: 16px;
+  padding: 12px;
+}
+
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  font-size: 12px;
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.day {
+  background: #f9fafb;
+  border-radius: 12px;
+  height: 68px;
+  padding: 6px;
+  font-size: 12px;
+}
+
+.day.selected {
+  background: #e0f2f1;
+}
+
+/* ===== フッター ===== */
+.footer {
+  padding: 16px;
+  text-align: center;
+}
+</style>
 </head>
+
 <body>
-  <div class="wrap">
-    <header>
-      <div class="brand">
-        <div class="logo">🐤</div>
-        <div>
-          <h1>カナリア通信｜活動カレンダー</h1>
-          <div class="sub">活動を選んで、日付に割り当てるだけ。印刷や共有はあとで追加できます。</div>
-        </div>
-      </div>
 
-      <div class="actions">
-        <select id="monthPicker" aria-label="月を選ぶ"></select>
-        <button class="ghost" id="btnClear">全消去</button>
-        <button class="primary" id="btnSave">この月を保存</button>
-      </div>
-    </header>
+<header>カナリア通信｜活動カレンダー</header>
 
-    <div class="grid">
-      <!-- Left: Activities -->
-      <section class="panel">
-        <h2>① 活動を選ぶ</h2>
-        <p class="hint">
-          まず活動を1つ選んでください。次にカレンダーの日付をタップすると、その活動が入ります。<br>
-          （例：🏃運動を選ぶ → 1/7をタップ → 1/7が「運動」になる）
-        </p>
+<div class="top-bar">
+  <select>
+    <option>2025年12月</option>
+  </select>
+  <button class="save-btn">この月を保存</button>
+</div>
 
-        <div class="chips" id="activityChips"></div>
+<h3>① 活動を選ぶ</h3>
 
-        <div class="legend" id="legend"></div>
-
-        <div style="margin-top:12px;" class="selected-date" id="statusBox">
-          選択中の活動：<b id="currentAct">未選択</b><br>
-          直近で選んだ日付：<b id="currentDate">なし</b>
-        </div>
-
-        <div class="toast" id="toast"></div>
-      </section>
-
-      <!-- Right: Calendar -->
-      <section class="panel">
-        <div class="cal-head">
-          <div class="month-title" id="monthTitle">----</div>
-          <div class="cal-tools">
-            <button class="ghost" id="prevMonth">◀ 前月</button>
-            <button class="ghost" id="nextMonth">次月 ▶</button>
-          </div>
-        </div>
-
-        <table class="cal" id="calendarTable" aria-label="活動カレンダー">
-          <thead>
-            <tr>
-              <th style="color:#ef4444">日</th>
-              <th>月</th>
-              <th>火</th>
-              <th>水</th>
-              <th>木</th>
-              <th>金</th>
-              <th style="color:#3b82f6">土</th>
-            </tr>
-          </thead>
-          <tbody id="calendarBody"></tbody>
-        </table>
-
-        <p class="hint" style="margin-top:10px;">
-          ※「保存」はブラウザ内に保存（端末ごと）。後でGoogleスプレッドシート連携も可能。
-        </p>
-      </section>
-    </div>
+<div class="action-grid" id="actionGrid">
+  <div class="action-item" onclick="selectAction(this)">
+    <div class="action-icon bg-orange">🏃</div>
+    <div class="action-label">運動</div>
   </div>
+  <div class="action-item" onclick="selectAction(this)">
+    <div class="action-icon bg-purple">✋</div>
+    <div class="action-label">指先課題</div>
+  </div>
+  <div class="action-item" onclick="selectAction(this)">
+    <div class="action-icon bg-teal">🧠</div>
+    <div class="action-label">集中課題</div>
+  </div>
+  <div class="action-item" onclick="selectAction(this)">
+    <div class="action-icon bg-yellow">🎨</div>
+    <div class="action-label">工作</div>
+  </div>
+  <div class="action-item" onclick="selectAction(this)">
+    <div class="action-icon bg-green">🍳</div>
+    <div class="action-label">料理</div>
+  </div>
+  <div class="action-item" onclick="selectAction(this)">
+    <div class="action-icon bg-brown">🍪</div>
+    <div class="action-label">おやつ作り</div>
+  </div>
+  <div class="action-item" onclick="selectAction(this)">
+    <div class="action-icon bg-blue">🎲</div>
+    <div class="action-label">ルールゲーム</div>
+  </div>
+  <div class="action-item" onclick="selectAction(this)">
+    <div class="action-icon bg-lime">🏠</div>
+    <div class="action-label">生活学習</div>
+  </div>
+  <div class="action-item" onclick="selectAction(this)">
+    <div class="action-icon bg-gray">🚌</div>
+    <div class="action-label">外出</div>
+  </div>
+</div>
+
+<h3>② 日付を選ぶ</h3>
+
+<div class="calendar">
+  <div class="week">
+    <div>日</div><div>月</div><div>火</div><div>水</div>
+    <div>木</div><div>金</div><div>土</div>
+  </div>
+  <div class="days">
+    <!-- 仮：1〜31 -->
+    <div class="day">1</div><div class="day">2</div><div class="day">3</div>
+    <div class="day">4</div><div class="day">5</div><div class="day">6</div>
+    <div class="day">7</div><div class="day">8</div><div class="day">9</div>
+    <div class="day">10</div><div class="day">11</div><div class="day">12</div>
+    <div class="day">13</div><div class="day">14</div><div class="day">15</div>
+    <div class="day">16</div><div class="day">17</div><div class="day">18</div>
+    <div class="day">19</div><div class="day">20</div><div class="day">21</div>
+    <div class="day">22</div><div class="day">23</div><div class="day">24</div>
+    <div class="day">25</div><div class="day">26</div><div class="day">27</div>
+    <div class="day">28</div><div class="day">29</div><div class="day">30</div>
+    <div class="day">31</div>
+  </div>
+</div>
+
+<div class="footer">
+  <a href="index.html">← トップに戻る</a>
+</div>
 
 <script>
-  // =========================
-  // 活動マスタ（ここを増やすだけでUIに反映される）
-  // =========================
-  const ACTIVITIES = [
-    { id:"off",   label:"お休み",     emoji:"😶", color:"#9ca3af" },
-    { id:"sport", label:"運動",       emoji:"🏃", color:"#3b82f6" },
-    { id:"craft", label:"工作",       emoji:"🎨", color:"#f59e0b" },
-    { id:"game",  label:"ルールゲーム", emoji:"🎲", color:"#a855f7" },
-    { id:"kara",  label:"カラオケ",   emoji:"🎤", color:"#ef4444" },
-    { id:"study", label:"学習",       emoji:"📚", color:"#16a34a" },
-    { id:"planet",label:"プラネタリウム",emoji:"🪐", color:"#0ea5e9" },
-    { id:"prog",  label:"プログラミング",emoji:"🤖", color:"#111827" },
-  ];
-
-  // =========================
-  // 状態
-  // =========================
-  let selectedActivityId = null;
-  let viewYear, viewMonth; // month: 0-11
-  let assignments = {}; // { "YYYY-MM-DD": "activityId" }
-
-  // localStorage keys
-  const LS_PREFIX = "kanaria_calendar_v1";
-  const monthKey = (y,m)=> `${LS_PREFIX}:${y}-${String(m+1).padStart(2,"0")}`;
-
-  // DOM
-  const monthPicker = document.getElementById("monthPicker");
-  const activityChips = document.getElementById("activityChips");
-  const legend = document.getElementById("legend");
-  const monthTitle = document.getElementById("monthTitle");
-  const calendarBody = document.getElementById("calendarBody");
-  const currentAct = document.getElementById("currentAct");
-  const currentDate = document.getElementById("currentDate");
-  const toast = document.getElementById("toast");
-
-  const btnSave = document.getElementById("btnSave");
-  const btnClear = document.getElementById("btnClear");
-  const prevMonthBtn = document.getElementById("prevMonth");
-  const nextMonthBtn = document.getElementById("nextMonth");
-
-  // =========================
-  // Utils
-  // =========================
-  const pad2 = (n)=> String(n).padStart(2,"0");
-  const ymd = (y,m,d)=> `${y}-${pad2(m+1)}-${pad2(d)}`;
-  const findAct = (id)=> ACTIVITIES.find(a=>a.id===id);
-
-  function showToast(msg){
-    toast.textContent = msg;
-    toast.classList.add("show");
-    clearTimeout(showToast._t);
-    showToast._t = setTimeout(()=> toast.classList.remove("show"), 1800);
-  }
-
-  // =========================
-  // 初期化：月
-  // =========================
-  function initMonthPicker(){
-    // 今年±1年を選べるように
-    const now = new Date();
-    const baseYear = now.getFullYear();
-    const options = [];
-    for(let y=baseYear-1; y<=baseYear+1; y++){
-      for(let m=0; m<12; m++){
-        options.push({ y, m, label: `${y}年 ${m+1}月` });
-      }
-    }
-    monthPicker.innerHTML = options.map(o=>{
-      const value = `${o.y}-${o.m}`;
-      return `<option value="${value}">${o.label}</option>`;
-    }).join("");
-
-    viewYear = now.getFullYear();
-    viewMonth = now.getMonth();
-    monthPicker.value = `${viewYear}-${viewMonth}`;
-  }
-
-  function loadMonth(y,m){
-    viewYear = y; viewMonth = m;
-    monthPicker.value = `${y}-${m}`;
-    monthTitle.textContent = `${y}年 ${m+1}月`;
-
-    // load assignments for month
-    const raw = localStorage.getItem(monthKey(y,m));
-    assignments = raw ? JSON.parse(raw) : {};
-    renderCalendar();
-  }
-
-  // =========================
-  // 活動UI
-  // =========================
-  function renderActivities(){
-    activityChips.innerHTML = ACTIVITIES.map(a=>{
-      return `
-        <div class="chip" data-id="${a.id}" data-active="false" title="${a.label}">
-          <span class="emoji">${a.emoji}</span>
-          <span>${a.label}</span>
-          <span class="dot" style="background:${a.color}"></span>
-        </div>
-      `;
-    }).join("");
-
-    legend.innerHTML = ACTIVITIES.map(a=>{
-      return `
-        <div class="item">
-          <span class="dot" style="background:${a.color}"></span>
-          <span>${a.emoji} ${a.label}</span>
-        </div>
-      `;
-    }).join("");
-
-    activityChips.querySelectorAll(".chip").forEach(chip=>{
-      chip.addEventListener("click", ()=>{
-        const id = chip.dataset.id;
-        selectActivity(id);
-      });
-    });
-  }
-
-  function selectActivity(id){
-    selectedActivityId = id;
-    activityChips.querySelectorAll(".chip").forEach(c=>{
-      c.dataset.active = (c.dataset.id === id) ? "true" : "false";
-    });
-    const act = findAct(id);
-    currentAct.textContent = act ? `${act.emoji} ${act.label}` : "未選択";
-  }
-
-  // =========================
-  // カレンダー描画
-  // =========================
-  function renderCalendar(){
-    calendarBody.innerHTML = "";
-
-    const first = new Date(viewYear, viewMonth, 1);
-    const last  = new Date(viewYear, viewMonth+1, 0);
-    const firstDow = first.getDay(); // 0=Sun
-
-    let day = 1 - firstDow; // start from Sunday cell
-    for(let r=0; r<6; r++){
-      const tr = document.createElement("tr");
-
-      for(let c=0; c<7; c++, day++){
-        const td = document.createElement("td");
-        td.className = "cell";
-
-        const inMonth = (day>=1 && day<=last.getDate());
-        td.dataset.out = inMonth ? "false" : "true";
-
-        if(!inMonth){
-          td.innerHTML = `<div class="daynum"></div>`;
-          tr.appendChild(td);
-          continue;
-        }
-
-        const key = ymd(viewYear, viewMonth, day);
-        const assignedId = assignments[key];
-        const assigned = assignedId ? findAct(assignedId) : null;
-
-        td.innerHTML = `
-          <div class="daynum">${day}</div>
-          ${assigned ? `
-            <div class="badge" style="background: color-mix(in oklab, ${assigned.color} 16%, #ffffff); border-color: color-mix(in oklab, ${assigned.color} 35%, #ffffff);">
-              <span class="emoji">${assigned.emoji}</span>
-              <span>${assigned.label}</span>
-            </div>
-          ` : ``}
-        `;
-
-        td.addEventListener("click", ()=>{
-          if(!selectedActivityId){
-            showToast("先に「活動」を選んでください");
-            return;
-          }
-          assignments[key] = selectedActivityId;
-          const act = findAct(selectedActivityId);
-          currentDate.textContent = `${viewYear}/${viewMonth+1}/${day}`;
-          showToast(`${viewYear}/${viewMonth+1}/${day} に「${act.label}」を入れました`);
-          renderCalendar();
-        });
-
-        tr.appendChild(td);
-      }
-
-      calendarBody.appendChild(tr);
-
-      // 6週目が不要ならbreak（最後の週に当月日付が1つもない場合は終了）
-      const hasInMonth = Array.from(tr.children).some(td => td.dataset.out === "false");
-      if(!hasInMonth) break;
-    }
-  }
-
-  // =========================
-  // イベント
-  // =========================
-  monthPicker.addEventListener("change", ()=>{
-    const [yStr, mStr] = monthPicker.value.split("-");
-    loadMonth(Number(yStr), Number(mStr));
-  });
-
-  prevMonthBtn.addEventListener("click", ()=>{
-    let y=viewYear, m=viewMonth-1;
-    if(m<0){ m=11; y--; }
-    loadMonth(y,m);
-  });
-
-  nextMonthBtn.addEventListener("click", ()=>{
-    let y=viewYear, m=viewMonth+1;
-    if(m>11){ m=0; y++; }
-    loadMonth(y,m);
-  });
-
-  btnSave.addEventListener("click", ()=>{
-    localStorage.setItem(monthKey(viewYear, viewMonth), JSON.stringify(assignments));
-    showToast("この月を保存しました（この端末のブラウザ内）");
-  });
-
-  btnClear.addEventListener("click", ()=>{
-    assignments = {};
-    localStorage.removeItem(monthKey(viewYear, viewMonth));
-    renderCalendar();
-    showToast("この月の内容を全消去しました");
-  });
-
-  // =========================
-  // 起動
-  // =========================
-  initMonthPicker();
-  renderActivities();
-  loadMonth(viewYear, viewMonth);
-
-  // 初期選択（任意）：運動
-  selectActivity("sport");
+function selectAction(el) {
+  document.querySelectorAll('.action-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+}
 </script>
+
 </body>
 </html>
