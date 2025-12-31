@@ -6,143 +6,126 @@
   <title>放課後児童クラブ 活動ナビ</title>
 
   <style>
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Noto Sans JP",
-                   "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
-      background: #f5f6f8;
-      color: #333;
+    :root{
+      --bg:#f5f6f8;
+      --card:#ffffff;
+      --shadow:0 8px 18px rgba(0,0,0,.10);
+      --header:#4fc3c7;
+      --text:#222;
     }
 
-    /* ヘッダー */
-    header {
-      background: #4fc3c7;
-      color: #fff;
-      text-align: center;
-      padding: 18px;
-      font-size: 20px;
-      font-weight: 700;
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    header{
+      background:var(--header);
+      color:#fff;
+      text-align:center;
+      padding:18px 14px;
+      font-size:20px;
+      font-weight:700;
     }
 
     /* カレンダー作成ボタン */
-    .start-wrap {
-      margin: 24px auto 32px;
-      text-align: center;
+    .start-wrap{
+      padding:18px 16px 8px;
+      text-align:center;
+    }
+    .start-btn{
+      display:inline-block;
+      width:min(420px, 100%);
+      padding:14px 18px;
+      font-size:16px;
+      font-weight:800;
+      color:#fff;
+      background:linear-gradient(135deg,#22c55e,#16a34a);
+      border-radius:14px;
+      text-decoration:none;
+      box-shadow:0 10px 22px rgba(0,0,0,.14);
+    }
+    .start-btn:active{
+      transform:translateY(1px);
+      box-shadow:0 6px 14px rgba(0,0,0,.16);
     }
 
-    .start-btn {
-      display: inline-block;
-      padding: 14px 28px;
-      font-size: 16px;
-      font-weight: 700;
-      color: #fff;
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-      border-radius: 999px;
-      text-decoration: none;
-      box-shadow: 0 8px 20px rgba(0,0,0,.15);
+    /* 3列グリッド（左の見た目に固定） */
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:18px;
+      padding:16px;
+      padding-bottom:32px;
     }
 
-    .start-btn:active {
-      transform: translateY(1px);
-      box-shadow: 0 4px 10px rgba(0,0,0,.2);
+    /* 画面が狭い時も “左の見た目” に寄せる */
+    @media (max-width: 380px){
+      .grid{ gap:14px; }
     }
 
-    /* グリッド */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-      padding: 0 16px 32px;
+    .item{
+      background:var(--card);
+      border-radius:18px;
+      padding:16px 10px 18px;
+      text-align:center;
+      box-shadow:var(--shadow);
     }
 
-    /* カード */
-    .item {
-      background: #fff;
-      border-radius: 18px;
-      padding: 14px 6px 18px;
-      text-align: center;
-      box-shadow: 0 6px 16px rgba(0,0,0,.08);
+    .icon{
+      width:78px;
+      height:78px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:36px;
+      margin:0 auto 10px;
     }
 
-    .icon {
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 36px;
-      margin: 0 auto 10px;
-    }
-
-    .label {
-      font-size: 14px;
-      font-weight: 600;
+    .label{
+      font-size:14px;
+      font-weight:800;
+      letter-spacing:.02em;
     }
 
     /* アイコン色 */
-    .c-sport { background: #ff8a65; }
-    .c-finger { background: #9575cd; }
-    .c-focus { background: #4db6ac; }
-    .c-art { background: #fbc02d; }
-    .c-cook { background: #66bb6a; }
-    .c-snack { background: #ffb74d; }
-    .c-game { background: #64b5f6; }
-    .c-life { background: #81c784; }
-    .c-out { background: #90a4ae; }
+    .c-sport{ background:#ff8a65; }
+    .c-finger{ background:#9575cd; }
+    .c-focus{ background:#4db6ac; }
+    .c-art{ background:#fbc02d; }
+    .c-cook{ background:#66bb6a; }
+    .c-snack{ background:#ffb74d; }
+    .c-game{ background:#64b5f6; }
+    .c-life{ background:#81c784; }
+    .c-out{ background:#90a4ae; }
   </style>
 </head>
 
 <body>
+  <header>放課後児童クラブ 活動ナビ</header>
 
-  <header>
-    放課後児童クラブ 活動ナビ
-  </header>
-
-  <!-- カレンダー作成ボタン -->
+  <!-- ✅ ここにリンクボタン（必ず表示される） -->
   <div class="start-wrap">
-    <a href="action.html" class="start-btn">カレンダー作成</a>
+    <a class="start-btn" href="action.html">カレンダー作成</a>
   </div>
 
-  <!-- 活動一覧 -->
   <div class="grid">
-    <div class="item">
-      <div class="icon c-sport">🏃‍♂️</div>
-      <div class="label">運動</div>
-    </div>
-    <div class="item">
-      <div class="icon c-finger">✋</div>
-      <div class="label">指先課題</div>
-    </div>
-    <div class="item">
-      <div class="icon c-focus">🧠</div>
-      <div class="label">集中課題</div>
-    </div>
-    <div class="item">
-      <div class="icon c-art">🎨</div>
-      <div class="label">工作</div>
-    </div>
-    <div class="item">
-      <div class="icon c-cook">🍳</div>
-      <div class="label">料理</div>
-    </div>
-    <div class="item">
-      <div class="icon c-snack">🍪</div>
-      <div class="label">おやつ作り</div>
-    </div>
-    <div class="item">
-      <div class="icon c-game">🎲</div>
-      <div class="label">ルールゲーム</div>
-    </div>
-    <div class="item">
-      <div class="icon c-life">🏠</div>
-      <div class="label">生活学習</div>
-    </div>
-    <div class="item">
-      <div class="icon c-out">🚌</div>
-      <div class="label">外出</div>
-    </div>
-  </div>
+    <div class="item"><div class="icon c-sport">🏃‍♂️</div><div class="label">運動</div></div>
+    <div class="item"><div class="icon c-finger">✋</div><div class="label">指先課題</div></div>
+    <div class="item"><div class="icon c-focus">🧠</div><div class="label">集中課題</div></div>
 
+    <div class="item"><div class="icon c-art">🎨</div><div class="label">工作</div></div>
+    <div class="item"><div class="icon c-cook">🍳</div><div class="label">料理</div></div>
+    <div class="item"><div class="icon c-snack">🍪</div><div class="label">おやつ作り</div></div>
+
+    <div class="item"><div class="icon c-game">🎲</div><div class="label">ルールゲーム</div></div>
+    <div class="item"><div class="icon c-life">🏠</div><div class="label">生活学習</div></div>
+    <div class="item"><div class="icon c-out">🚌</div><div class="label">外出</div></div>
+  </div>
 </body>
 </html>
