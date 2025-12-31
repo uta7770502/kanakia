@@ -92,6 +92,26 @@
     margin-bottom:10px;
   }
 
+  /* ★ジャンルとカレンダーの間のボタン */
+  .between-actions{
+    margin: 6px 16px 2px;
+    display:flex;
+    justify-content:center;
+  }
+  .previewBtn{
+    width:min(520px, 100%);
+    border:none;
+    border-radius:999px;
+    padding:14px 16px;
+    font-weight:900;
+    font-size:16px;
+    cursor:pointer;
+    color:#fff;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    box-shadow:0 14px 26px rgba(47,179,74,.22);
+  }
+  .previewBtn:active{ transform: translateY(1px); }
+
   /* 9ジャンルグリッド（トップページと同テイスト） */
   .genre-grid{
     display:grid;
@@ -155,25 +175,6 @@
     font-weight:900;
     margin-left:6px;
   }
-
-  /* ✅ ジャンルとカレンダーの間の「配布確認へ」ボタン */
-  .between-actions{
-    margin: 0 16px 10px;
-    display:flex;
-    justify-content:center;
-  }
-  .previewBtn{
-    width: min(520px, 100%);
-    border:none;
-    border-radius: 999px;
-    padding: 12px 16px;
-    font-weight: 900;
-    color:#fff;
-    cursor:pointer;
-    background: linear-gradient(135deg,var(--accent),var(--accent2));
-    box-shadow: 0 10px 18px rgba(47,179,74,.22);
-  }
-  .previewBtn:active{ transform: translateY(1px); }
 
   /* ===== カレンダー ===== */
   .cal-head{
@@ -396,7 +397,7 @@
     </div>
   </div>
 
-  <!-- ✅ ここ：ジャンルとカレンダーの間 -->
+  <!-- ★ここが「ジャンルとカレンダーの間」 -->
   <div class="between-actions">
     <button id="previewBtn" class="previewBtn">配布確認へ</button>
   </div>
@@ -447,8 +448,7 @@
    9ジャンル + 各ジャンル6アクション
 ============================ */
 const GENRES = [
-  {
-    id:"sport", label:"運動", emoji:"🏃", iconBg:"bg-orange", tag:"t-orange",
+  { id:"sport", label:"運動", emoji:"🏃", iconBg:"bg-orange", tag:"t-orange",
     actions:[
       { id:"sport-run",   label:"かけっこ", emoji:"🏃‍♂️", sub:"体力づくり" },
       { id:"sport-ball",  label:"ボール遊び", emoji:"⚽️", sub:"協調・ルール" },
@@ -456,10 +456,8 @@ const GENRES = [
       { id:"sport-gym",   label:"サーキット", emoji:"🤸", sub:"運動機能" },
       { id:"sport-walk",  label:"散歩", emoji:"🚶", sub:"気分転換" },
       { id:"sport-game",  label:"運動ゲーム", emoji:"🏸", sub:"楽しく運動" },
-    ]
-  },
-  {
-    id:"finger", label:"指先課題", emoji:"✋", iconBg:"bg-purple", tag:"t-purple",
+    ]},
+  { id:"finger", label:"指先課題", emoji:"✋", iconBg:"bg-purple", tag:"t-purple",
     actions:[
       { id:"finger-cut",  label:"はさみ", emoji:"✂️", sub:"巧緻性" },
       { id:"finger-fold", label:"折り紙", emoji:"📄", sub:"手順・集中" },
@@ -467,10 +465,8 @@ const GENRES = [
       { id:"finger-peg",  label:"洗濯ばさみ", emoji:"📎", sub:"つまむ練習" },
       { id:"finger-clay", label:"粘土", emoji:"🧱", sub:"握る・こねる" },
       { id:"finger-puzzle",label:"パズル", emoji:"🧩", sub:"形合わせ" },
-    ]
-  },
-  {
-    id:"focus", label:"集中課題", emoji:"🧠", iconBg:"bg-teal", tag:"t-teal",
+    ]},
+  { id:"focus", label:"集中課題", emoji:"🧠", iconBg:"bg-teal", tag:"t-teal",
     actions:[
       { id:"focus-worksheet", label:"ワーク", emoji:"📝", sub:"机上課題" },
       { id:"focus-maze",      label:"迷路", emoji:"🌀", sub:"注意・計画" },
@@ -478,10 +474,8 @@ const GENRES = [
       { id:"focus-letter",    label:"ことば", emoji:"🔤", sub:"文字" },
       { id:"focus-memory",    label:"記憶ゲーム", emoji:"🧠", sub:"記憶・集中" },
       { id:"focus-time",      label:"時計", emoji:"🕒", sub:"時間理解" },
-    ]
-  },
-  {
-    id:"craft", label:"工作", emoji:"🎨", iconBg:"bg-yellow", tag:"t-yellow",
+    ]},
+  { id:"craft", label:"工作", emoji:"🎨", iconBg:"bg-yellow", tag:"t-yellow",
     actions:[
       { id:"craft-paint", label:"ぬり絵", emoji:"🖍️", sub:"表現" },
       { id:"craft-paper", label:"紙工作", emoji:"📎", sub:"制作" },
@@ -489,10 +483,8 @@ const GENRES = [
       { id:"craft-collage",label:"コラージュ", emoji:"📰", sub:"貼る" },
       { id:"craft-mask",  label:"お面", emoji:"🎭", sub:"ごっこ遊び" },
       { id:"craft-card",  label:"カード作り", emoji:"💌", sub:"プレゼント" },
-    ]
-  },
-  {
-    id:"cook", label:"料理", emoji:"🍳", iconBg:"bg-green", tag:"t-green",
+    ]},
+  { id:"cook", label:"料理", emoji:"🍳", iconBg:"bg-green", tag:"t-green",
     actions:[
       { id:"cook-sand", label:"サンド", emoji:"🥪", sub:"かんたん調理" },
       { id:"cook-salad",label:"サラダ", emoji:"🥗", sub:"混ぜる" },
@@ -500,10 +492,8 @@ const GENRES = [
       { id:"cook-soup", label:"スープ", emoji:"🍲", sub:"手順" },
       { id:"cook-egg",  label:"たまご", emoji:"🍳", sub:"加熱" },
       { id:"cook-fruit",label:"フルーツ", emoji:"🍎", sub:"切る" },
-    ]
-  },
-  {
-    id:"snack", label:"おやつ作り", emoji:"🍪", iconBg:"bg-brown", tag:"t-brown",
+    ]},
+  { id:"snack", label:"おやつ作り", emoji:"🍪", iconBg:"bg-brown", tag:"t-brown",
     actions:[
       { id:"snack-cookie", label:"クッキー", emoji:"🍪", sub:"こねる" },
       { id:"snack-jelly",  label:"ゼリー", emoji:"🍮", sub:"冷やす" },
@@ -511,10 +501,8 @@ const GENRES = [
       { id:"snack-pancake",label:"ホットケーキ", emoji:"🥞", sub:"焼く" },
       { id:"snack-choco",  label:"チョコ", emoji:"🍫", sub:"固める" },
       { id:"snack-popcorn",label:"ポップコーン", emoji:"🍿", sub:"楽しい" },
-    ]
-  },
-  {
-    id:"rule", label:"ルールゲーム", emoji:"🎲", iconBg:"bg-blue", tag:"t-blue",
+    ]},
+  { id:"rule", label:"ルールゲーム", emoji:"🎲", iconBg:"bg-blue", tag:"t-blue",
     actions:[
       { id:"rule-uno",   label:"カードゲーム", emoji:"🃏", sub:"順番" },
       { id:"rule-board", label:"ボードゲーム", emoji:"🎲", sub:"ルール" },
@@ -522,10 +510,8 @@ const GENRES = [
       { id:"rule-jenga", label:"バランス", emoji:"🧱", sub:"手先" },
       { id:"rule-shiritori",label:"しりとり", emoji:"🗣️", sub:"言葉" },
       { id:"rule-team",  label:"チーム戦", emoji:"🤝", sub:"協力" },
-    ]
-  },
-  {
-    id:"life", label:"生活学習", emoji:"🏠", iconBg:"bg-lime", tag:"t-lime",
+    ]},
+  { id:"life", label:"生活学習", emoji:"🏠", iconBg:"bg-lime", tag:"t-lime",
     actions:[
       { id:"life-clean",  label:"掃除", emoji:"🧹", sub:"片付け" },
       { id:"life-laundry",label:"洗濯", emoji:"👕", sub:"たたむ" },
@@ -533,10 +519,8 @@ const GENRES = [
       { id:"life-traffic",label:"交通", emoji:"🚦", sub:"安全" },
       { id:"life-manner", label:"マナー", emoji:"🙇", sub:"社会性" },
       { id:"life-time",   label:"時間", emoji:"⏰", sub:"予定" },
-    ]
-  },
-  {
-    id:"out", label:"外出", emoji:"🚌", iconBg:"bg-gray", tag:"t-gray",
+    ]},
+  { id:"out", label:"外出", emoji:"🚌", iconBg:"bg-gray", tag:"t-gray",
     actions:[
       { id:"out-park",   label:"公園", emoji:"🛝", sub:"遊具" },
       { id:"out-walk",   label:"散策", emoji:"🌿", sub:"自然" },
@@ -544,14 +528,13 @@ const GENRES = [
       { id:"out-shop",   label:"買い物", emoji:"🛒", sub:"実践" },
       { id:"out-museum", label:"見学", emoji:"🏛️", sub:"学び" },
       { id:"out-train",  label:"乗り物", emoji:"🚃", sub:"体験" },
-    ]
-  },
+    ]},
 ];
 
 const genreById = Object.fromEntries(GENRES.map(g => [g.id, g]));
 
 /* ===== 状態 ===== */
-let current = null;          // 選択中：{ genreId, actionId }
+let current = null;
 let viewY = 2025;
 let viewM = 12;
 let lastPicked = "なし";
@@ -635,18 +618,12 @@ function openModal(genreId){
   modal.classList.add("show");
 }
 
-function closeModal(){
-  modal.classList.remove("show");
-}
+function closeModal(){ modal.classList.remove("show"); }
 
 document.getElementById("modalX").addEventListener("click", closeModal);
 document.getElementById("modalBack").addEventListener("click", closeModal);
-modal.addEventListener("click", (e)=>{
-  if(e.target === modal) closeModal();
-});
-document.addEventListener("keydown", (e)=>{
-  if(e.key === "Escape") closeModal();
-});
+modal.addEventListener("click", (e)=>{ if(e.target === modal) closeModal(); });
+document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeModal(); });
 
 /* ===== 状態表示 ===== */
 function updateStatus(){
@@ -661,7 +638,7 @@ function updateStatus(){
   document.getElementById("lastDate").textContent = lastPicked;
 }
 
-/* ===== 保存データ（ISO -> {genreId, actionId}） ===== */
+/* ===== 保存データ ===== */
 function loadMonth(y,m){
   try{
     const raw = localStorage.getItem(keyOf(y,m));
@@ -736,9 +713,9 @@ function clearMonth(){
   renderCalendar();
 }
 
-/* ===== saved.htmlへ（配布確認ページへ） ===== */
-function goSaved(){
-  location.href = `saved.html?y=${viewY}&m=${viewM}`;
+/* ===== プレビューへ（★ここが重要：preview.html に飛ばす） ===== */
+function goPreview(){
+  location.href = `preview.html?y=${viewY}&m=${viewM}`;
 }
 
 /* ===== 月移動 ===== */
@@ -756,8 +733,8 @@ renderCalendar();
 updateStatus();
 
 document.getElementById("clearBtn").addEventListener("click", clearMonth);
-document.getElementById("saveBtn").addEventListener("click", goSaved);
-document.getElementById("previewBtn").addEventListener("click", goSaved);
+document.getElementById("saveBtn").addEventListener("click", goPreview);
+document.getElementById("previewBtn").addEventListener("click", goPreview);
 document.getElementById("prevBtn").addEventListener("click", ()=>shiftMonth(-1));
 document.getElementById("nextBtn").addEventListener("click", ()=>shiftMonth(1));
 </script>
